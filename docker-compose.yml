@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: smartmeeting_db
+    environment:
+      POSTGRES_DB: smartmeeting
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - smartmeeting_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d smartmeeting"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Users Service
+  users_service:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    container_name: users_service
+    environment:
+      - DATABASE_URL=postgresql://admin:admin123@postgres:5432/smartmeeting
+      - SECRET_KEY=your-secret-key-change-in-production
+      - SERVICE_PORT=5001
+    ports:
+      - "5001:5001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - smartmeeting_network
+    volumes:
+      - ./services/users:/app
+    command: python app.py
+
+  # Rooms Service
+  rooms_service:
+    build:
+      context: ./services/rooms
+      dockerfile: Dockerfile
+    container_name: rooms_service
+    environment:
+      - DATABASE_URL=postgresql://admin:admin123@postgres:5432/smartmeeting
+      - SECRET_KEY=your-secret-key-change-in-production
+      - SERVICE_PORT=5002
+      - USERS_SERVICE_URL=http://users_service:5001
+    ports:
+      - "5002:5002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - smartmeeting_network
+    volumes:
+      - ./services/rooms:/app
+    command: python app.py
+
+  # Bookings Service
+  bookings_service:
+    build:
+      context: ./services/bookings
+      dockerfile: Dockerfile
+    container_name: bookings_service
+    environment:
+      - DATABASE_URL=postgresql://admin:admin123@postgres:5432/smartmeeting
+      - SECRET_KEY=your-secret-key-change-in-production
+      - SERVICE_PORT=5003
+      - USERS_SERVICE_URL=http://users_service:5001
+      - ROOMS_SERVICE_URL=http://rooms_service:5002
+    ports:
+      - "5003:5003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - smartmeeting_network
+    volumes:
+      - ./services/bookings:/app
+    command: python app.py
+
+  # Reviews Service
+  reviews_service:
+    build:
+      context: ./services/reviews
+      dockerfile: Dockerfile
+    container_name: reviews_service
+    environment:
+      - DATABASE_URL=postgresql://admin:admin123@postgres:5432/smartmeeting
+      - SECRET_KEY=your-secret-key-change-in-production
+      - SERVICE_PORT=5004
+      - USERS_SERVICE_URL=http://users_service:5001
+      - ROOMS_SERVICE_URL=http://rooms_service:5002
+    ports:
+      - "5004:5004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - smartmeeting_network
+    volumes:
+      - ./services/reviews:/app
+    command: python app.py
+
+networks:
+  smartmeeting_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
