@@ -17,3 +17,27 @@ CREATE TABLE users (
 );
 
 CREATE INDEX idx_users_username ON users(username);
+
+
+-- Rooms Table
+CREATE TABLE rooms (
+    room_id SERIAL PRIMARY KEY,
+    room_name VARCHAR(100) UNIQUE NOT NULL,
+    capacity INTEGER NOT NULL,
+    location VARCHAR(200) NOT NULL,
+    status VARCHAR(20) DEFAULT 'available'
+);
+
+-- Equipment Table
+CREATE TABLE equipment (
+    equipment_id SERIAL PRIMARY KEY,
+    equipment_name VARCHAR(100) NOT NULL
+);
+
+-- Room_Equipment Junction Table
+CREATE TABLE room_equipment (
+    room_equipment_id SERIAL PRIMARY KEY,
+    room_id INTEGER REFERENCES rooms(room_id) ON DELETE CASCADE,
+    equipment_id INTEGER REFERENCES equipment(equipment_id) ON DELETE CASCADE,
+    quantity INTEGER DEFAULT 1
+);
