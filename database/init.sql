@@ -41,3 +41,19 @@ CREATE TABLE room_equipment (
     equipment_id INTEGER REFERENCES equipment(equipment_id) ON DELETE CASCADE,
     quantity INTEGER DEFAULT 1
 );
+
+
+-- Bookings Table
+CREATE TABLE bookings (
+    booking_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    room_id INTEGER REFERENCES rooms(room_id) ON DELETE CASCADE,
+    booking_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    status VARCHAR(20) DEFAULT 'confirmed',
+    purpose TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_bookings_date ON bookings(booking_date);
