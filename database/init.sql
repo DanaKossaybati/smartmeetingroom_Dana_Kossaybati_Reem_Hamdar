@@ -81,5 +81,7 @@ CREATE TABLE reviews (
     room_id INTEGER REFERENCES rooms(room_id),
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    is_flagged BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, room_id)
 );
