@@ -18,7 +18,6 @@ CREATE TABLE users (
 
 CREATE INDEX idx_users_username ON users(username);
 
-
 -- Rooms Table
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
@@ -42,7 +41,6 @@ CREATE TABLE room_equipment (
     quantity INTEGER DEFAULT 1
 );
 
-
 -- Bookings Table
 CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
@@ -57,3 +55,31 @@ CREATE TABLE bookings (
 );
 
 CREATE INDEX idx_bookings_date ON bookings(booking_date);
+
+-- Sessions Table
+CREATE TABLE sessions (
+    session_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    token VARCHAR(500) UNIQUE NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Booking History Table
+CREATE TABLE booking_history (
+    history_id SERIAL PRIMARY KEY,
+    booking_id INTEGER REFERENCES bookings(booking_id),
+    action VARCHAR(20) NOT NULL,
+    changed_by INTEGER REFERENCES users(user_id),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Reviews Table
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    room_id INTEGER REFERENCES rooms(room_id),
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
