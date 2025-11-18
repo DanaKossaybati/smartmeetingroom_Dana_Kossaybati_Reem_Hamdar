@@ -2,7 +2,7 @@
 SQLAlchemy database models for Users Service.
 Defines the User table structure and ORM mappings.
 
-Author: Team Member 1
+Author: Dana Kossaybti
 """
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
