@@ -2,7 +2,7 @@
 Authentication and authorization utilities.
 Handles password hashing, JWT token creation/validation, and access control.
 
-Author: Team Member 1
+Author: Dana Kossaybati
 """
 from datetime import datetime, timedelta
 from typing import Optional
