@@ -9,7 +9,7 @@
 ---
 
 ## Project Overview
-The Smart Meeting Room Management System is a backend solution built using Flask microservices.  
+The Smart Meeting Room Management System is a backend solution built using FastAPI microservices.  
 It provides functionality for user management, room reservations, and review moderation through RESTful APIs.  
 Each service runs independently in a Docker container and communicates with others through HTTP requests.
 
@@ -20,13 +20,13 @@ The system is designed to be modular, scalable, and secure, focusing on authenti
 ## Core Services
 | Service | Description | Example Port |
 |----------|--------------|--------------|
-| **Users Service** | Handles registration, login, and authentication | 5001 |
-| **Rooms Service** | Manages room details, capacity, and equipment | 5002 |
-| **Bookings Service** | Handles room reservations and booking history | 5003 |
-| **Reviews Service** | Allows users to submit and manage reviews | 5004 |
+| **Users Service** | Handles registration, login, and authentication | 8001 |
+| **Rooms Service** | Manages room details, capacity, and equipment | 8002 |
+| **Bookings Service** | Handles room reservations and booking history | 8003 |
+| **Reviews Service** | Allows users to submit and manage reviews | 8004 |
 
 Each service has:
-- A dedicated Flask app and Dockerfile  
+- A dedicated FastAPI app and Dockerfile  
 - Its own database connection  
 - RESTful endpoints  
 - Integration with a centralized PostgreSQL instance
@@ -36,11 +36,11 @@ Each service has:
 ## Team Responsibilities
 
 ### Team Member 1 – Dana Kossaybati
-- **Services:** Users (5001), Bookings (5003)  
+- **Services:** Users (8001), Bookings (8003)  
 - **Part II Tasks:**  
 
 ### Team Member 2 – Reem Hamdar
-- **Services:** Rooms (5002), Reviews (5004)  
+- **Services:** Rooms (8002), Reviews (8004)  
 - **Part II Tasks:**  
 
 
@@ -48,7 +48,7 @@ Each service has:
 
 ## Technology Stack
 - **Language:** Python 3.10+  
-- **Framework:** Flask  
+- **Framework:** FastAPI   
 - **Database:** PostgreSQL (via Docker container)  
 - **Authentication:** JWT-based with Role-Based Access Control (RBAC)  
 - **Testing:** Pytest and Postman  
