@@ -127,7 +127,7 @@ def validate_username(username: str) -> Tuple[bool, str]:
         return False, "Username must start with a letter"
     
     # Only alphanumeric and underscore
-    if not re.match(r'^[a-zA-Z][a-zA-Z0-9_]*\, username):
+    if not re.match(r'^[a-zA-Z][a-zA-Z0-9_]*$', username):
         return False, "Username can only contain letters, numbers, and underscores"
         
     return True, ""
