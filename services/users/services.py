@@ -11,7 +11,7 @@ Author: Team Member 1
 """
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List
 
 import models
@@ -89,8 +89,7 @@ class UserService:
             password_hash=hashed_password,
             email=email,
             full_name=full_name,
-            role=role,
-            created_at=datetime.utcnow()
+            role=role
         )
         
         # Persist to database
@@ -141,7 +140,7 @@ class UserService:
             return None
         
         # Update last login timestamp
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now(timezone.utc)
         db.commit()
         
         return user
@@ -233,8 +232,6 @@ class UserService:
         if update_data.full_name:
             user.full_name = sanitize_input(update_data.full_name)
         
-        # Update timestamp
-        user.updated_at = datetime.utcnow()
         
         # Commit changes
         db.commit()

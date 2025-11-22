@@ -4,7 +4,7 @@ Handles password hashing, JWT token creation/validation, and access control.
 
 Author: Dana Kossaybati
 """
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -47,7 +47,7 @@ def hash_password(password: str) -> str:
         Hashed password string safe for database storage
     
     Example:
-        hash_password("MyPassword123") -> "\\\..."
+        hash_password("MyPassword123") -> r"\\\..."
     """
     return pwd_context.hash(password)
 
@@ -94,9 +94,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     
     # Set expiration time
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     # Add expiration to payload
     to_encode.update({"exp": expire})

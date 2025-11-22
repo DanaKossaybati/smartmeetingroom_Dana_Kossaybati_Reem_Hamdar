@@ -83,8 +83,7 @@ async def update_user_profile(
     if user_update.full_name:
         user.full_name = user_update.full_name
     
-    # Update timestamp and commit
-    user.updated_at = datetime.utcnow()
+    # Commit
     db.commit()
     db.refresh(user)
     

@@ -84,5 +84,5 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",    # Listen on all network interfaces
         port=8001,          # Users service port
-        reload=True         # Auto-reload on code changes (development only)
+        reload=False         
     )

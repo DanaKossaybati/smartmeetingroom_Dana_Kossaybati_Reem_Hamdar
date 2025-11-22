@@ -6,7 +6,7 @@ Author: Dana Kossaybati
 """
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
+from datetime import datetime, timezone
 import schemas
 import models
 import auth
@@ -62,7 +62,7 @@ async def login_user(login_data: schemas.UserLogin, db: Session = Depends(get_db
         raise HTTPException(status_code=403, detail="Account is inactive")
     
     # Update last login timestamp for security auditing
-    user.last_login = datetime.utcnow()
+    user.last_login = datetime.now(timezone.utc)
     db.commit()
     
     # Generate JWT access token

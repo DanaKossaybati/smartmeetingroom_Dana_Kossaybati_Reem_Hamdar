@@ -11,7 +11,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+load_dotenv()
 
 # Get database URL from environment (never hardcode credentials!)
 DATABASE_URL = os.getenv("DATABASE_URL")
