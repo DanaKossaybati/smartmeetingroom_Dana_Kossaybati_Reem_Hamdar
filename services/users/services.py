@@ -7,7 +7,7 @@ This follows the Service Layer pattern:
 - Services handle business logic
 - Models handle data persistence
 
-Author: Team Member 1
+Author: Dana Kossaybati
 """
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError

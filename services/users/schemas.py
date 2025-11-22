@@ -2,7 +2,7 @@
 Pydantic schemas for request/response validation.
 These schemas validate incoming data and structure API responses.
 
-Author: Team Member 1
+Author: Dana Kossaybati
 """
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional
