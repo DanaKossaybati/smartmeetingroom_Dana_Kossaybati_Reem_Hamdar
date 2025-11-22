@@ -9,11 +9,11 @@
 -- USERS
 -- ============================================
 INSERT INTO users (username, password_hash, email, full_name, role) VALUES
-('dana_k', '$2b$12$9Bx8YXzk19q6WGr1o/NpB.xl2p4YzqQfqMZPYg9TRrWw2b6Uq9Fhe', 'dak39@mail.aub.edu', 'Dana Kossaybati', 'admin'),
-('reem_h', '$2b$12$9Bx8YXzk19q6WGr1o/NpB.xl2p4YzqQfqMZPYg9TRrWw2b6Uq9Fhe', 'rsh44@mail.aub.edu', 'Reem Hamdar', 'facility_manager'),
-('fadi_karam', '$2b$12$9Bx8YXzk19q6WGr1o/NpB.xl2p4YzqQfqMZPYg9TRrWw2b6Uq9Fhe', 'fk21@mail.aub.edu', 'Fadi Karam', 'regular_user'),
-('mira_sleiman', '$2b$12$9Bx8YXzk19q6WGr1o/NpB.xl2p4YzqQfqMZPYg9TRrWw2b6Uq9Fhe', 'ms45@mail.aub.edu', 'Mira Sleiman', 'moderator'),
-('karim_tarek', '$2b$12$9Bx8YXzk19q6WGr1o/NpB.xl2p4YzqQfqMZPYg9TRrWw2b6Uq9Fhe', 'kt88@mail.aub.edu', 'Karim Tarek', 'regular_user');
+('dana_k', '$2b$12$WkxAZ99WLLVYcq18qMoFz.jSBzZwZvq9DqXMnO1/tm7kVCGPRuRKG', 'dak39@mail.aub.edu', 'Dana Kossaybati', 'admin'),
+('reem_h', '$2b$12$WkxAZ99WLLVYcq18qMoFz.jSBzZwZvq9DqXMnO1/tm7kVCGPRuRKG', 'rsh44@mail.aub.edu', 'Reem Hamdar', 'facility_manager'),
+('fadi_karam', '$2b$12$WkxAZ99WLLVYcq18qMoFz.jSBzZwZvq9DqXMnO1/tm7kVCGPRuRKG', 'fk21@mail.aub.edu', 'Fadi Karam', 'regular_user'),
+('mira_sleiman', '$2b$12$WkxAZ99WLLVYcq18qMoFz.jSBzZwZvq9DqXMnO1/tm7kVCGPRuRKG', 'ms45@mail.aub.edu', 'Mira Sleiman', 'moderator'),
+('karim_tarek', '$2b$12$WkxAZ99WLLVYcq18qMoFz.jSBzZwZvq9DqXMnO1/tm7kVCGPRuRKG', 'kt88@mail.aub.edu', 'Karim Tarek', 'regular_user');
 
 -- ============================================
 -- EQUIPMENT
