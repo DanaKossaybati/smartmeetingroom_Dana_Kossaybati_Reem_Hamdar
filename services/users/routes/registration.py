@@ -68,8 +68,7 @@ async def register_user(user_data: schemas.UserCreate, db: Session = Depends(get
         password_hash=auth.hash_password(user_data.password),  # Bcrypt hashing
         email=user_data.email,
         full_name=user_data.full_name,
-        role=user_data.role,
-        created_at=datetime.utcnow()
+        role=user_data.role
     )
     
     # Add to database and commit transaction
