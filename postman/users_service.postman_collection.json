@@ -1,0 +1,1979 @@
+{
+	"info": {
+		"_postman_id": "a5e28a89-ca53-4eb2-a1e7-a627b31c03d2",
+		"name": "Users Service - Smart Meeting Room Dana Kossaybati Reem Hamdar",
+		"description": "Complete API collection for Users Service with authentication, authorization, and profile management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32714669"
+	},
+	"item": [
+		{
+			"name": "1. Registration & Authentication",
+			"item": [
+				{
+					"name": "Register User - Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has user_id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('user_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"SecurePass123!\",\n  \"email\": \"john.doe@test.com\",\n  \"full_name\": \"John Doe\",\n  \"role\": \"regular_user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Register a new user with valid credentials. Password must be strong (8+ chars, uppercase, lowercase, number)."
+					},
+					"response": [
+						{
+							"name": "Register User - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"SecurePass123!\",\n  \"email\": \"john.doe@test.com\",\n  \"full_name\": \"John Doe\",\n  \"role\": \"regular_user\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:33:36 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "186"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 9,\n    \"username\": \"john_doe\",\n    \"email\": \"john.doe@test.com\",\n    \"full_name\": \"John Doe\",\n    \"role\": \"regular_user\",\n    \"is_active\": true,\n    \"created_at\": \"2025-11-22T19:33:37.527673Z\",\n    \"last_login\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Register User - Duplicate Username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"pm.test(\"Error mentions duplicate\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.detail).to.include('already exists');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"AnotherPass123!\",\n  \"email\": \"different@test.com\",\n  \"full_name\": \"Another User\",\n  \"role\": \"regular_user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Attempt to register with duplicate username - should return 409 Conflict."
+					},
+					"response": [
+						{
+							"name": "Register User - Duplicate Username",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"AnotherPass123!\",\n  \"email\": \"different@test.com\",\n  \"full_name\": \"Another User\",\n  \"role\": \"regular_user\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:33:41 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "36"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Username already exists\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Register User - Weak Password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"weakpass\",\n  \"password\": \"weak\",\n  \"email\": \"weak@test.com\",\n  \"full_name\": \"Weak Pass User\",\n  \"role\": \"regular_user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Attempt registration with weak password - should fail validation."
+					},
+					"response": [
+						{
+							"name": "Register User - Weak Password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"weakpass\",\n  \"password\": \"weak\",\n  \"email\": \"weak@test.com\",\n  \"full_name\": \"Weak Pass User\",\n  \"role\": \"regular_user\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:33:46 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "153"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": [\n        {\n            \"type\": \"string_too_short\",\n            \"loc\": [\n                \"body\",\n                \"password\"\n            ],\n            \"msg\": \"String should have at least 8 characters\",\n            \"input\": \"weak\",\n            \"ctx\": {\n                \"min_length\": 8\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Register User - Invalid Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"invalidemail\",\n  \"password\": \"AnotherPass123!\",\n  \"email\": \"not-an-email\",\n  \"full_name\": \"Invalid Email User\",\n  \"role\": \"regular_user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Attempt registration with weak password - should fail validation."
+					},
+					"response": [
+						{
+							"name": "Register User - Invalid Email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"invalidemail\",\n  \"password\": \"AnotherPass123!\",\n  \"email\": \"not-an-email\",\n  \"full_name\": \"Invalid Email User\",\n  \"role\": \"regular_user\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:33:50 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "220"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": [\n        {\n            \"type\": \"value_error\",\n            \"loc\": [\n                \"body\",\n                \"email\"\n            ],\n            \"msg\": \"value is not a valid email address: An email address must have an @-sign.\",\n            \"input\": \"not-an-email\",\n            \"ctx\": {\n                \"reason\": \"An email address must have an @-sign.\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Login - Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('access_token');",
+									"    pm.collectionVariables.set('auth_token', jsonData.access_token);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Login with valid credentials. Token is automatically saved to collection variable."
+					},
+					"response": [
+						{
+							"name": "Login - Success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"SecurePass123!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:19 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "270"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjksInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MjY0NjB9.eEKHB-3OrS8N0qK3ompzsbtQuQoKv6LxfzBJN6MKxa8\",\n    \"token_type\": \"bearer\",\n    \"user_id\": 9,\n    \"username\": \"john_doe\",\n    \"role\": \"regular_user\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login - Invalid Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"WrongPassword123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Attempt login with wrong password - should return 401 Unauthorized."
+					},
+					"response": [
+						{
+							"name": "Login - Invalid Credentials",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"WrongPassword123!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:26 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "32"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Invalid credentials\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login - Nonexistant User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"nonexistent_user\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Attempt login with wrong password - should return 401 Unauthorized."
+					},
+					"response": [
+						{
+							"name": "Login - Nonexistant User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"nonexistent_user\",\n  \"password\": \"SecurePass123!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:32 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "32"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Invalid credentials\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Profile Management",
+			"item": [
+				{
+					"name": "Get Own Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MTkyOTB9.1VbJBTD6hLDoyAQJqpPqLrq49DZ_4hPqRDmSnR8y8FI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Get own profile using Bearer token from login."
+					},
+					"response": [
+						{
+							"name": "Get Own Profile",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:39 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "211"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 9,\n    \"username\": \"john_doe\",\n    \"email\": \"john.doe@test.com\",\n    \"full_name\": \"John Doe\",\n    \"role\": \"regular_user\",\n    \"is_active\": true,\n    \"created_at\": \"2025-11-22T19:33:37.527673Z\",\n    \"last_login\": \"2025-11-22T19:34:20.323141Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Own Profile Unautharized",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Get own profile using Bearer token from login."
+					},
+					"response": [
+						{
+							"name": "Get Own Profile Unautharized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:45 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "www-authenticate",
+									"value": "Bearer"
+								},
+								{
+									"key": "content-length",
+									"value": "30"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Other User Profile - Forbidden",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MTkyOTB9.1VbJBTD6hLDoyAQJqpPqLrq49DZ_4hPqRDmSnR8y8FI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/admin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"admin"
+							]
+						},
+						"description": "Attempt to access another user's profile - should be forbidden."
+					},
+					"response": [
+						{
+							"name": "Get Other User Profile - Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/admin",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"admin"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:34:50 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "26"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Access denied\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MTkyOTB9.1VbJBTD6hLDoyAQJqpPqLrq49DZ_4hPqRDmSnR8y8FI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.updated@test.com\",\n  \"full_name\": \"John Updated Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Update user profile email and full name."
+					},
+					"response": [
+						{
+							"name": "Update Profile",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john.updated@test.com\",\n  \"full_name\": \"John Updated Doe\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:35:02 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "223"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 9,\n    \"username\": \"john_doe\",\n    \"email\": \"john.updated@test.com\",\n    \"full_name\": \"John Updated Doe\",\n    \"role\": \"regular_user\",\n    \"is_active\": true,\n    \"created_at\": \"2025-11-22T19:33:37.527673Z\",\n    \"last_login\": \"2025-11-22T19:34:20.323141Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Profile with Existing Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MTkyOTB9.1VbJBTD6hLDoyAQJqpPqLrq49DZ_4hPqRDmSnR8y8FI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"dak39@mail.aub.edu\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Update user profile email and full name."
+					},
+					"response": [
+						{
+							"name": "Update Profile with Existing Email",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"dak39@mail.aub.edu\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:35:06 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "33"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Email already in use\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Profile with Invalid Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MjM4ODJ9.3kNn_vIYraajCXyXQTI_C8e3faZYzAIYqv3J-Js-R1M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"invalid_email@c\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Update user profile email and full name."
+					},
+					"response": [
+						{
+							"name": "Update Profile with Invalid Email",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"invalid_email@c\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "Unprocessable Content",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:35:11 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "277"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": [\n        {\n            \"type\": \"value_error\",\n            \"loc\": [\n                \"body\",\n                \"email\"\n            ],\n            \"msg\": \"value is not a valid email address: The part after the @-sign is not valid. It should have a period.\",\n            \"input\": \"invalid_email@c\",\n            \"ctx\": {\n                \"reason\": \"The part after the @-sign is not valid. It should have a period.\"\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Other User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkYW5hX2siLCJ1c2VyX2lkIjoxLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjM5MjMzMjl9.3cKR26gxXoEPBm67HVMIHN7G06l9uHt83mOEOJuOlOA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Fadi Karam Updated by Admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/fadi_karam",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"fadi_karam"
+							]
+						},
+						"description": "Update user profile email and full name."
+					},
+					"response": [
+						{
+							"name": "Update Other User Profile",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"full_name\": \"Fadi Karam Updated by Admin\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/fadi_karam",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"fadi_karam"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:37:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "207"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 3,\n    \"username\": \"fadi_karam\",\n    \"email\": \"fk21@mail.aub.edu\",\n    \"full_name\": \"Fadi Karam Updated by Admin\",\n    \"role\": \"regular_user\",\n    \"is_active\": true,\n    \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n    \"last_login\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Profile Anauthenticated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.updated@test.com\",\n  \"full_name\": \"John Updated Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Update user profile email and full name."
+					},
+					"response": [
+						{
+							"name": "Update Profile Anauthenticated",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"john.updated@test.com\",\n  \"full_name\": \"John Updated Doe\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:37:41 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "www-authenticate",
+									"value": "Bearer"
+								},
+								{
+									"key": "content-length",
+									"value": "30"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huX2RvZSIsInVzZXJfaWQiOjcsInJvbGUiOiJyZWd1bGFyX3VzZXIiLCJleHAiOjE3NjM5MjQ0NDV9.Y2XRwPVKY7SA5IdoK8ltA9YvQ9IiJVd35E6BGn3G86o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/john_doe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"john_doe"
+							]
+						},
+						"description": "Delete user account (permanent operation)."
+					},
+					"response": [
+						{
+							"name": "Delete Account",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/john_doe",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"john_doe"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:38:04 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "39"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User deleted successfully\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Admin Operations",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set('auth_token', jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Login as admin to get admin token for privileged operations."
+					},
+					"response": [
+						{
+							"name": "Admin Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"SecurePass123!\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/login",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:38:43 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "249"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJfaWQiOjEwLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjM5MjY3MjR9.t7vePc5n8XUQPkf5Da9GD5iX09UYgONZGfbjh_fIKvY\",\n    \"token_type\": \"bearer\",\n    \"user_id\": 10,\n    \"username\": \"admin\",\n    \"role\": \"admin\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Users - Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInVzZXJfaWQiOjgsInJvbGUiOiJhZG1pbiIsImV4cCI6MTc2MzkyNTU2MX0.YKrkMDAK-lx0zgSBQweXeCUdIatrYRJND4xRvBWx_PY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Get all users (admin only). Use admin token from previous request."
+					},
+					"response": [
+						{
+							"name": "Get All Users - Admin",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:38:51 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "1220"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"user_id\": 4,\n        \"username\": \"mira_sleiman\",\n        \"email\": \"ms45@mail.aub.edu\",\n        \"full_name\": \"Mira Sleiman\",\n        \"role\": \"moderator\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n        \"last_login\": null\n    },\n    {\n        \"user_id\": 5,\n        \"username\": \"karim_tarek\",\n        \"email\": \"kt88@mail.aub.edu\",\n        \"full_name\": \"Karim Tarek\",\n        \"role\": \"regular_user\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n        \"last_login\": null\n    },\n    {\n        \"user_id\": 3,\n        \"username\": \"fadi_karam\",\n        \"email\": \"fk21@mail.aub.edu\",\n        \"full_name\": \"Fadi Karam Updated by Admin\",\n        \"role\": \"regular_user\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n        \"last_login\": null\n    },\n    {\n        \"user_id\": 2,\n        \"username\": \"reem_h\",\n        \"email\": \"rsh44@mail.aub.edu\",\n        \"full_name\": \"Reem Hamdar\",\n        \"role\": \"facility_manager\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n        \"last_login\": \"2025-11-22T19:23:41.455946Z\"\n    },\n    {\n        \"user_id\": 1,\n        \"username\": \"dana_k\",\n        \"email\": \"dak39@mail.aub.edu\",\n        \"full_name\": \"Dana Kossaybati\",\n        \"role\": \"admin\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-19T13:05:00.540814Z\",\n        \"last_login\": \"2025-11-22T19:33:22.867403Z\"\n    },\n    {\n        \"user_id\": 10,\n        \"username\": \"admin\",\n        \"email\": \"admin@test.com\",\n        \"full_name\": \"Admin\",\n        \"role\": \"admin\",\n        \"is_active\": true,\n        \"created_at\": \"2025-11-22T19:38:38.420336Z\",\n        \"last_login\": \"2025-11-22T19:38:44.232907Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Register Admin",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"username\": \"admin\", \r\n    \"password\": \"SecurePass123!\", \r\n    \"email\": \"admin@test.com\", \r\n    \"full_name\": \"Admin\", \r\n    \"role\": \"admin\" \r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register Admin",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{ \r\n    \"username\": \"admin\", \r\n    \"password\": \"SecurePass123!\", \r\n    \"email\": \"admin@test.com\", \r\n    \"full_name\": \"Admin\", \r\n    \"role\": \"admin\" \r\n} ",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:38:37 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "171"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user_id\": 10,\n    \"username\": \"admin\",\n    \"email\": \"admin@test.com\",\n    \"full_name\": \"Admin\",\n    \"role\": \"admin\",\n    \"is_active\": true,\n    \"created_at\": \"2025-11-22T19:38:38.420336Z\",\n    \"last_login\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "4. Health & Status",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Health check endpoint for monitoring."
+					},
+					"response": [
+						{
+							"name": "Health Check",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:39:00 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "38"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"healthy\",\n    \"service\": \"users\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Root Endpoint",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Root endpoint showing service info."
+					},
+					"response": [
+						{
+							"name": "Root Endpoint",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Sat, 22 Nov 2025 19:39:06 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "56"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"service\": \"users\",\n    \"status\": \"running\",\n    \"version\": \"1.0.0\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8001",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
