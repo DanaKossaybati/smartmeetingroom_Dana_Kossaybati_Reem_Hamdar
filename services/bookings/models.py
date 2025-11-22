@@ -2,7 +2,7 @@
 SQLAlchemy database models for Bookings Service.
 Defines Booking and BookingHistory table structures.
 
-Author: Team Member 1
+Author: Dana Kossaybati
 """
 from sqlalchemy import Column, Integer, String, Date, Time, DateTime, Text
 from sqlalchemy.sql import func
