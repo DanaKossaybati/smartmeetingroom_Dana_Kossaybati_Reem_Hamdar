@@ -2,8 +2,8 @@
 -- Smart Meeting Room Management System
 -- Database Schema (PostgreSQL 17)
 -- Authors: Dana Kossaybati, Reem Hamdar
--- Team Member 1: Users, Bookings, Booking_History
--- Team Member 2: Rooms, Equipment, Reviews
+-- Dana Kossaybati: Users, Bookings, Booking_History
+-- Reem Hamdar: Rooms, Equipment, Reviews
 -- ============================================
 
 -- Enable required extensions
