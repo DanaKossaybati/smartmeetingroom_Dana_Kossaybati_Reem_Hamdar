@@ -184,7 +184,5 @@ class Room(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-    __table_args__ = (
-        CheckConstraint('capacity > 0', name='rooms_capacity_check'),
-        CheckConstraint("status IN ('available', 'unavailable', 'maintenance')", name='rooms_status_check'),
-    )
+    def __repr__(self):
+        return f"<Room(id={self.room_id}, name={self.room_name}, status={self.status})>"
