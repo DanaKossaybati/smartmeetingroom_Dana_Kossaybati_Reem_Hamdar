@@ -165,3 +165,26 @@ class BookingHistory(Base):
     def __repr__(self):
         """String representation for debugging."""
         return f"<BookingHistory(booking={self.booking_id}, action={self.action}, time={self.timestamp})>"
+
+class Room(Base):
+    """
+    Read-only Room model for foreign key validation.
+    Actual CRUD operations handled by Rooms Service.
+    This model enables Bookings Service to verify room existence.
+    """
+    __tablename__ = 'rooms'
+    
+    room_id = Column(Integer, primary_key=True)
+    room_name = Column(String(100), nullable=False, unique=True)
+    capacity = Column(Integer, nullable=False)
+    location = Column(String(200), nullable=False)
+    description = Column(Text)
+    status = Column(String(20), default='available')
+    created_by = Column(Integer)  # References users(user_id)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    __table_args__ = (
+        CheckConstraint('capacity > 0', name='rooms_capacity_check'),
+        CheckConstraint("status IN ('available', 'unavailable', 'maintenance')", name='rooms_status_check'),
+    )

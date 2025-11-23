@@ -36,35 +36,33 @@ class BookingService:
     """
     
     @staticmethod
-    async def verify_room_exists(room_id: int) -> bool:
+    def verify_room_exists(room_id: int, db: Session) -> models.Room:
         """
-        Verify room exists by calling Rooms Service API.
-        
-        This is inter-service communication - Bookings service
-        doesn't have direct access to rooms table.
+        Verify room exists and is available for booking.
+        Queries rooms table directly (shared database approach).
         
         Args:
-            room_id: Room ID to verify
-        
+            room_id: Room identifier to verify
+            db: Database session
+            
         Returns:
-            True if room exists, False otherwise
-        
-        Note:
-            In production, consider caching room existence
-            to reduce inter-service calls.
+            Room object if exists and available
+            
+        Raises:
+            RoomNotFoundException: If room doesn't exist or unavailable
         """
-        try:
-            async with httpx.AsyncClient() as client:
-                # Call Rooms Service to verify room exists
-                response = await client.get(
-                    f"{ROOMS_SERVICE_URL}/api/rooms/{room_id}",
-                    timeout=5.0  # 5 second timeout
-                )
-                return response.status_code == 200
-        except (httpx.RequestError, httpx.TimeoutException):
-            # If Rooms service is down, fail safely
-            # In production, might want to use circuit breaker pattern
-            return False
+        room = db.query(models.Room).filter(models.Room.room_id == room_id).first()
+        
+        if not room:
+            raise RoomNotFoundException(f"Room with ID {room_id} not found")
+        
+        # Check room status - only 'available' rooms can be booked
+        if room.status != 'available':
+            raise RoomNotFoundException(
+                f"Room '{room.room_name}' is currently {room.status} and cannot be booked"
+            )
+        
+        return room
     
     @staticmethod
     def check_booking_conflict(
