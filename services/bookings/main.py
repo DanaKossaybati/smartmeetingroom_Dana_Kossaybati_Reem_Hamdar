@@ -7,6 +7,7 @@ Author: Dana Kosssaybati
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import router as bookings_router
+import analytics
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -29,6 +30,9 @@ app.add_middleware(
 
 # Include API routes
 app.include_router(bookings_router)
+
+# Register the analytics router
+app.include_router(analytics.router, prefix="/api")
 
 @app.get(
     "/",
