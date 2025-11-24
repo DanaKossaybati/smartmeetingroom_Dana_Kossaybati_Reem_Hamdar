@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "a5e28a89-ca53-4eb2-a1e7-a627b31c03d2",
 		"name": "Users Service - Smart Meeting Room Dana Kossaybati Reem Hamdar",
-		"description": "Complete API collection for Users Service with authentication, authorization, and profile management",
+		"description": "Complete API collection for Users Service with authentication, authorization, and profile management\n\nAuthor: Dana Kossaybati",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32714669"
 	},
