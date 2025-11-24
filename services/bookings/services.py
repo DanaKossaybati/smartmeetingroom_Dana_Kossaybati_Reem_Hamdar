@@ -15,7 +15,7 @@ from typing import Optional, List
 import httpx
 import os
 
-import models
+from models import Booking, Room, BookingHistory
 import schemas
 from utils import sanitize_input, validate_booking_time, times_overlap
 from errors import (
@@ -36,7 +36,7 @@ class BookingService:
     """
     
     @staticmethod
-    def verify_room_exists(room_id: int, db: Session) -> models.Room:
+    def verify_room_exists(room_id: int, db: Session) -> Room:
         """
         Verify room exists and is available for booking.
         Queries rooms table directly (shared database approach).
@@ -51,7 +51,7 @@ class BookingService:
         Raises:
             RoomNotFoundException: If room doesn't exist or unavailable
         """
-        room = db.query(models.Room).filter(models.Room.room_id == room_id).first()
+        room = db.query(Room).filter(Room.room_id == room_id).first()
         
         if not room:
             raise RoomNotFoundException(f"Room with ID {room_id} not found")
@@ -96,16 +96,16 @@ class BookingService:
             Query is optimized with indexes on (room_id, booking_date, status)
         """
         # Query for potentially conflicting bookings
-        query = db.query(models.Booking).filter(
-            models.Booking.room_id == room_id,
-            models.Booking.booking_date == booking_date,
+        query = db.query(Booking).filter(
+            Booking.room_id == room_id,
+            Booking.booking_date == booking_date,
             # Only check active bookings (not cancelled)
-            models.Booking.status.in_(['confirmed', 'pending'])
+            Booking.status.in_(['confirmed', 'pending'])
         )
         
         # Exclude specific booking (for update operations)
         if exclude_booking_id:
-            query = query.filter(models.Booking.booking_id != exclude_booking_id)
+            query = query.filter(Booking.booking_id != exclude_booking_id)
         
         # Get all potentially conflicting bookings
         existing_bookings = query.all()
@@ -154,7 +154,7 @@ class BookingService:
             new_end: New end time (for updates/creation)
         """
         try:
-            history_record = models.BookingHistory(
+            history_record = BookingHistory(
                 booking_id=booking_id,
                 user_id=user_id,
                 room_id=room_id,
@@ -179,13 +179,13 @@ class BookingService:
         db: Session,
         booking_data: schemas.BookingCreate,
         current_user: dict
-    ) -> models.Booking:
+    ) -> Booking:
         """
         Create a new room booking.
         
         Business logic pipeline:
         1. Validate date/time constraints
-        2. Verify room exists (inter-service call)
+        2. Verify room exists
         3. Check for conflicts with existing bookings
         4. Create booking record
         5. Log to history table
@@ -212,8 +212,8 @@ class BookingService:
         if not is_valid:
             raise ValueError(error_msg)
         
-        # Step 2: Verify room exists (inter-service communication)
-        room_exists = await BookingService.verify_room_exists(booking_data.room_id)
+        # Step 2: Verify room exists
+        room_exists = BookingService.verify_room_exists(booking_data.room_id, db)
         if not room_exists:
             raise RoomNotFoundException(booking_data.room_id)
         
@@ -232,7 +232,7 @@ class BookingService:
         # Sanitize purpose text (defense in depth)
         purpose = sanitize_input(booking_data.purpose) if booking_data.purpose else None
         
-        new_booking = models.Booking(
+        new_booking = Booking(
             user_id=current_user["user_id"],
             room_id=booking_data.room_id,
             booking_date=booking_data.booking_date,
@@ -262,7 +262,7 @@ class BookingService:
         return new_booking
     
     @staticmethod
-    def get_booking_by_id(db: Session, booking_id: int) -> models.Booking:
+    def get_booking_by_id(db: Session, booking_id: int) -> Booking:
         """
         Retrieve booking by ID.
         
@@ -276,8 +276,8 @@ class BookingService:
         Raises:
             BookingNotFoundException: If booking doesn't exist
         """
-        booking = db.query(models.Booking).filter(
-            models.Booking.booking_id == booking_id
+        booking = db.query(Booking).filter(
+            Booking.booking_id == booking_id
         ).first()
         
         if not booking:
@@ -290,7 +290,7 @@ class BookingService:
         db: Session,
         user_id: int,
         status: Optional[str] = None
-    ) -> List[models.Booking]:
+    ) -> List[Booking]:
         """
         Get all bookings for a specific user.
         
@@ -302,17 +302,17 @@ class BookingService:
         Returns:
             List of Booking models
         """
-        query = db.query(models.Booking).filter(
-            models.Booking.user_id == user_id
+        query = db.query(Booking).filter(
+            Booking.user_id == user_id
         )
         
         if status:
-            query = query.filter(models.Booking.status == status)
+            query = query.filter(Booking.status == status)
         
         # Order by date (newest first)
         bookings = query.order_by(
-            models.Booking.booking_date.desc(),
-            models.Booking.start_time.desc()
+            Booking.booking_date.desc(),
+            Booking.start_time.desc()
         ).all()
         
         return bookings
@@ -323,7 +323,7 @@ class BookingService:
         room_id: Optional[int] = None,
         date: Optional[date_type] = None,
         status: Optional[str] = None
-    ) -> List[models.Booking]:
+    ) -> List[Booking]:
         """
         Get all bookings with optional filters.
         
@@ -338,20 +338,20 @@ class BookingService:
         Returns:
             List of Booking models
         """
-        query = db.query(models.Booking)
+        query = db.query(Booking)
         
         # Apply filters
         if room_id:
-            query = query.filter(models.Booking.room_id == room_id)
+            query = query.filter(Booking.room_id == room_id)
         if date:
-            query = query.filter(models.Booking.booking_date == date)
+            query = query.filter(Booking.booking_date == date)
         if status:
-            query = query.filter(models.Booking.status == status)
+            query = query.filter(Booking.status == status)
         
         # Order by date and time
         bookings = query.order_by(
-            models.Booking.booking_date.desc(),
-            models.Booking.start_time.desc()
+            Booking.booking_date.desc(),
+            Booking.start_time.desc()
         ).all()
         
         return bookings
@@ -362,7 +362,7 @@ class BookingService:
         booking_id: int,
         update_data: schemas.BookingUpdate,
         current_user: dict
-    ) -> models.Booking:
+    ) -> Booking:
         """
         Update existing booking.
         
@@ -466,7 +466,7 @@ class BookingService:
         db: Session,
         booking_id: int,
         current_user: dict
-    ) -> models.Booking:
+    ) -> Booking:
         """
         Cancel a booking (soft delete).
         
@@ -547,7 +547,7 @@ class BookingService:
         db: Session,
         room_id: int,
         date: date_type
-    ) -> List[models.Booking]:
+    ) -> List[Booking]:
         """
         Get all bookings for a room on specific date.
         
@@ -561,12 +561,17 @@ class BookingService:
         Returns:
             List of Booking models for that room and date
         """
-        bookings = db.query(models.Booking).filter(
-            models.Booking.room_id == room_id,
-            models.Booking.booking_date == date,
+        # Step 1: Verify room exists
+        room_exists = BookingService.verify_room_exists(room_id, db)
+        if not room_exists:
+            raise RoomNotFoundException(room_id)
+        
+        bookings = db.query(Booking).filter(
+            Booking.room_id == room_id,
+            Booking.booking_date == date,
             # Only show active bookings (not cancelled)
-            models.Booking.status.in_(['confirmed', 'pending', 'completed'])
-        ).order_by(models.Booking.start_time).all()
+            Booking.status.in_(['confirmed', 'pending', 'completed'])
+        ).order_by(Booking.start_time).all()
         
         return bookings
     
@@ -574,7 +579,7 @@ class BookingService:
     def get_booking_history(
         db: Session,
         booking_id: int
-    ) -> List[models.BookingHistory]:
+    ) -> List[BookingHistory]:
         """
         Get complete history of changes for a booking.
         
@@ -585,15 +590,15 @@ class BookingService:
         Returns:
             List of BookingHistory records (newest first)
         """
-        history = db.query(models.BookingHistory).filter(
-            models.BookingHistory.booking_id == booking_id
-        ).order_by(models.BookingHistory.timestamp.desc()).all()
+        history = db.query(BookingHistory).filter(
+            BookingHistory.booking_id == booking_id
+        ).order_by(BookingHistory.timestamp.desc()).all()
         
         return history
     
     @staticmethod
     def check_booking_authorization(
-        booking: models.Booking,
+        booking: Booking,
         current_user: dict
     ):
         """

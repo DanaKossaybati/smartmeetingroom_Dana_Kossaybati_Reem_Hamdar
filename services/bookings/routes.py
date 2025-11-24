@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date as date_type
+import traceback
 
 import schemas
 import auth
@@ -77,6 +78,8 @@ async def create_booking(
     
     except Exception as e:
         # Unexpected errors
+        print(f"Error creating booking: {str(e)}")
+        traceback.print_exc()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred while creating booking"
@@ -274,7 +277,7 @@ async def cancel_booking(
 )
 async def check_availability(
     room_id: int = Query(..., description="Room ID to check"),
-    date: date_type = Query(..., description="Date to check (YYYY-MM-DD)"),
+    booking_date: date_type = Query(..., description="Date to check (YYYY-MM-DD)"),
     start_time: str = Query(..., description="Start time (HH:MM:SS)"),
     end_time: str = Query(..., description="End time (HH:MM:SS)"),
     current_user: dict = Depends(auth.get_current_user),
@@ -285,7 +288,7 @@ async def check_availability(
     
     **Query Parameters:**
     - room_id: Room to check
-    - date: Date (YYYY-MM-DD)
+    - booking_date: Date (YYYY-MM-DD)
     - start_time: Start time (HH:MM:SS)
     - end_time: End time (HH:MM:SS)
     
@@ -300,13 +303,13 @@ async def check_availability(
         
         # Check availability
         is_available = BookingService.check_availability(
-            db, room_id, date, start, end
+            db, room_id, booking_date, start, end
         )
         
         return schemas.AvailabilityResponse(
             available=is_available,
             room_id=room_id,
-            date=date,
+            date=booking_date,
             start_time=start,
             end_time=end,
             message="Available" if is_available else "Time slot is already booked"
@@ -338,7 +341,8 @@ async def get_room_schedule(
     
     **Returns:**
     - 200: List of bookings for that room and date
-    """
+    - 404: Room doesn't exist
+    """    
     try:
         # Default to today if no date provided
         if date is None:
@@ -348,6 +352,9 @@ async def get_room_schedule(
         bookings = BookingService.get_room_schedule(db, room_id, date)
         return bookings
     
+    except HTTPException:
+        raise
+        
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -6,8 +6,6 @@ Author: Dana Kosssaybati
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.exc import SQLAlchemyError
-
 from routes import router as bookings_router
 
 # Create FastAPI application instance
@@ -18,7 +16,7 @@ app = FastAPI(
     docs_url="/docs",      # Swagger UI at /docs
     redoc_url="/redoc"     # ReDoc at /redoc
 )
-
+    
 # Configure CORS (Cross-Origin Resource Sharing)
 # Allows frontend applications to call this API
 app.add_middleware(
@@ -71,5 +69,6 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",    # Listen on all network interfaces
         port=8003,          # Bookings service port
-        reload=False
+        reload=False,
+        log_level="info"
     )
