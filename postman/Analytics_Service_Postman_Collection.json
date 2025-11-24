@@ -1,0 +1,404 @@
+{
+	"info": {
+		"_postman_id": "analytics-bookings-2024",
+		"name": "Bookings Service - Analytics API",
+		"description": "Complete test collection for Analytics & Insights endpoints\nPart II Enhancement by Dana Kossaybati",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8003",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "YOUR_JWT_TOKEN_HERE",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Analytics Endpoints",
+			"item": [
+				{
+					"name": "1. Booking Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/summary",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "summary"]
+						},
+						"description": "Get comprehensive booking statistics including:\n- Total bookings\n- Month-over-month growth rate\n- Status breakdown (confirmed, cancelled, etc.)\n- Average bookings per user\n\nAccess: All authenticated users\n- Admins see system-wide data\n- Regular users see only their bookings"
+					},
+					"response": [
+						{
+							"name": "Success - Admin View",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/summary",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "summary"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": "{\n    \"success\": true,\n    \"summary\": {\n        \"total_bookings\": 45,\n        \"bookings_this_month\": 18,\n        \"bookings_last_month\": 15,\n        \"growth_rate_percent\": 20.0,\n        \"status_breakdown\": {\n            \"confirmed\": 32,\n            \"cancelled\": 8,\n            \"completed\": 5\n        },\n        \"average_bookings_per_user\": 4.5,\n        \"top_users\": []\n    },\n    \"scope\": \"all_bookings\",\n    \"generated_at\": \"2025-11-24T14:30:00.123456\"\n}"
+						},
+						{
+							"name": "Success - Regular User View",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/summary",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "summary"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"summary\": {\n        \"total_bookings\": 8,\n        \"bookings_this_month\": 3,\n        \"bookings_last_month\": 2,\n        \"growth_rate_percent\": 50.0,\n        \"status_breakdown\": {\n            \"confirmed\": 6,\n            \"cancelled\": 2\n        },\n        \"average_bookings_per_user\": 0,\n        \"top_users\": []\n    },\n    \"scope\": \"my_bookings\",\n    \"generated_at\": \"2025-11-24T14:30:00.123456\"\n}"
+						}
+					]
+				},
+				{
+					"name": "2. Booking Trends (Last 7 Days)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/trends?days=7",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "trends"],
+							"query": [
+								{
+									"key": "days",
+									"value": "7",
+									"description": "Number of days to analyze (1-365)"
+								}
+							]
+						},
+						"description": "Get daily booking trends over specified time period.\n\nQuery Parameters:\n- days: Number of days to analyze (default: 30, range: 1-365)\n\nReturns:\n- Daily booking counts\n- Statistical analysis (avg, max, min per day)\n- Day of week for each date"
+					},
+					"response": [
+						{
+							"name": "Success - 7 Days",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/trends?days=7",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "trends"],
+									"query": [
+										{
+											"key": "days",
+											"value": "7"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"period\": \"last_7_days\",\n    \"statistics\": {\n        \"total_bookings\": 28,\n        \"average_per_day\": 4.0,\n        \"busiest_day_count\": 8,\n        \"slowest_day_count\": 1\n    },\n    \"trends\": [\n        {\n            \"date\": \"2025-11-18\",\n            \"bookings\": 3,\n            \"day_of_week\": \"Monday\"\n        },\n        {\n            \"date\": \"2025-11-19\",\n            \"bookings\": 5,\n            \"day_of_week\": \"Tuesday\"\n        },\n        {\n            \"date\": \"2025-11-20\",\n            \"bookings\": 8,\n            \"day_of_week\": \"Wednesday\"\n        }\n    ],\n    \"scope\": \"all_bookings\"\n}"
+						}
+					]
+				},
+				{
+					"name": "3. Booking Trends (Last 30 Days)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/trends?days=30",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "trends"],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Get booking trends for the last 30 days"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Peak Booking Hours",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/peak-hours",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "peak-hours"]
+						},
+						"description": "Analyze peak booking hours throughout the day.\n\nReturns:\n- Hourly distribution (00:00 to 23:00)\n- Booking count per hour\n- Percentage of total bookings\n- Popularity rating (high/medium/low)\n- Identification of busiest hour"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/peak-hours",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "peak-hours"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"peak_hours_analysis\": [\n        {\n            \"hour\": \"09:00\",\n            \"hour_24\": 9,\n            \"booking_count\": 8,\n            \"percentage_of_total\": 17.78,\n            \"popularity\": \"high\"\n        },\n        {\n            \"hour\": \"14:00\",\n            \"hour_24\": 14,\n            \"booking_count\": 12,\n            \"percentage_of_total\": 26.67,\n            \"popularity\": \"high\"\n        },\n        {\n            \"hour\": \"10:00\",\n            \"hour_24\": 10,\n            \"booking_count\": 5,\n            \"percentage_of_total\": 11.11,\n            \"popularity\": \"medium\"\n        }\n    ],\n    \"statistics\": {\n        \"total_bookings_analyzed\": 45,\n        \"busiest_hour\": \"14:00\",\n        \"busiest_hour_count\": 12\n    },\n    \"scope\": \"all_bookings\"\n}"
+						}
+					]
+				},
+				{
+					"name": "5. Day of Week Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/day-of-week",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "day-of-week"]
+						},
+						"description": "Analyze booking patterns by day of week.\n\nReturns:\n- Booking distribution across Monday-Sunday\n- Count and percentage for each day\n- Identification of busiest/slowest days"
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/day-of-week",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "day-of-week"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"day_of_week_analysis\": [\n        {\n            \"day_number\": 1,\n            \"day_name\": \"Monday\",\n            \"booking_count\": 8,\n            \"percentage\": 17.78\n        },\n        {\n            \"day_number\": 2,\n            \"day_name\": \"Tuesday\",\n            \"booking_count\": 10,\n            \"percentage\": 22.22\n        },\n        {\n            \"day_number\": 3,\n            \"day_name\": \"Wednesday\",\n            \"booking_count\": 12,\n            \"percentage\": 26.67\n        }\n    ],\n    \"total_bookings\": 45,\n    \"scope\": \"all_bookings\"\n}"
+						}
+					]
+				},
+				{
+					"name": "6. Cancellation Rate Analysis",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/cancellation-rate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "cancellation-rate"]
+						},
+						"description": "Calculate and analyze booking cancellation rates.\n\nReturns:\n- Overall cancellation percentage\n- Health status (healthy/moderate/high/critical)\n- Active vs cancelled bookings\n- Monthly cancellation trends (last 6 months)\n\nStatus Ratings:\n- Healthy: <10%\n- Moderate: 10-15%\n- High: 15-25%\n- Critical: >25%"
+					},
+					"response": [
+						{
+							"name": "Success - Healthy Status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/cancellation-rate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "cancellation-rate"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"cancellation_analysis\": {\n        \"total_bookings\": 45,\n        \"cancelled_bookings\": 3,\n        \"active_bookings\": 42,\n        \"cancellation_rate_percent\": 6.67,\n        \"status\": \"healthy\",\n        \"status_description\": \"Cancellation rate is healthy (<10%)\"\n    },\n    \"monthly_trend\": [\n        {\n            \"month\": \"2025-06\",\n            \"cancellations\": 1\n        },\n        {\n            \"month\": \"2025-07\",\n            \"cancellations\": 0\n        },\n        {\n            \"month\": \"2025-11\",\n            \"cancellations\": 2\n        }\n    ],\n    \"scope\": \"all_bookings\"\n}"
+						},
+						{
+							"name": "Success - High Status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/cancellation-rate",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "cancellation-rate"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"body": "{\n    \"success\": true,\n    \"cancellation_analysis\": {\n        \"total_bookings\": 45,\n        \"cancelled_bookings\": 9,\n        \"active_bookings\": 36,\n        \"cancellation_rate_percent\": 20.0,\n        \"status\": \"high\",\n        \"status_description\": \"Cancellation rate is concerning (15-25%)\"\n    },\n    \"monthly_trend\": [],\n    \"scope\": \"all_bookings\"\n}"
+						}
+					]
+				},
+				{
+					"name": "7. Interactive Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "dashboard"]
+						},
+						"description": "Returns an interactive HTML dashboard with:\n- 4 KPI metric cards (Total, Growth, Cancellation, Active)\n- Line chart showing booking trends (last 14 days)\n- Bar chart showing peak hours distribution\n- Doughnut chart showing day-of-week patterns\n- Pie chart showing status breakdown\n\nFeatures:\n- Responsive design\n- Real-time data from database\n- Chart.js visualizations\n- Color-coded status indicators\n- Gradient background\n\nNote: Open this endpoint in a web browser to view the dashboard."
+					},
+					"response": []
+				}
+			],
+			"description": "Analytics and Insights endpoints for monitoring booking service performance"
+		},
+		{
+			"name": "Error Cases",
+			"item": [
+				{
+					"name": "Invalid Days Parameter (400)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/trends?days=500",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "trends"],
+							"query": [
+								{
+									"key": "days",
+									"value": "500",
+									"description": "Invalid - exceeds maximum of 365"
+								}
+							]
+						},
+						"description": "Test validation error when days parameter exceeds limit"
+					},
+					"response": [
+						{
+							"name": "Bad Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/trends?days=500",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "trends"],
+									"query": [
+										{
+											"key": "days",
+											"value": "500"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"body": "{\n    \"detail\": \"Days parameter must be between 1 and 365\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Unauthorized Access (401)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/analytics/bookings/summary",
+							"host": ["{{base_url}}"],
+							"path": ["api", "analytics", "bookings", "summary"]
+						},
+						"description": "Test authentication requirement - request without token"
+					},
+					"response": [
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/analytics/bookings/summary",
+									"host": ["{{base_url}}"],
+									"path": ["api", "analytics", "bookings", "summary"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"body": "{\n    \"detail\": \"Not authenticated\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Error handling test cases"
+		},
+		{
+			"name": "Test Data Setup",
+			"item": [
+				{
+					"name": "Login to Get JWT Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save JWT token to environment variable",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('jwt_token', response.access_token);",
+									"    console.log('JWT token saved:', response.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/users/login",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8001",
+							"path": ["api", "users", "login"]
+						},
+						"description": "Login to Users Service to obtain JWT token.\n\nThe token is automatically saved to the {{jwt_token}} variable and used for all analytics requests.\n\nDefault credentials:\n- Username: admin\n- Password: admin123"
+					},
+					"response": []
+				}
+			],
+			"description": "Setup requests to prepare for testing"
+		}
+	]
+}
