@@ -44,7 +44,7 @@ def hash_password(password: str) -> str:
         Hashed password string safe for database storage
     
     Example:
-        hash_password("MyPassword123") -> r"\\\..."
+        hash_password("MyPassword123") -> "$2b$12$..."
     """
     return pwd_context.hash(password)
 

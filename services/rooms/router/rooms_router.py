@@ -3,7 +3,8 @@ from typing import Optional
 from aiocache.serializers import JsonSerializer
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from rooms.database import get_db
+# Use the local module `database` (same folder) instead of `rooms.database`
+from database import get_db
 from auth import get_current_user
 from enums import UserRole
 from models import Room, Equipment, RoomEquipment

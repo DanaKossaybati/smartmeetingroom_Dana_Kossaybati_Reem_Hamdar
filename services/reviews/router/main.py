@@ -1,5 +1,6 @@
 import threading
 import time
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
@@ -9,12 +10,11 @@ from rabbitmq_instance import rabbitmq_client
 # Import the router module from the local `router` package
 from router.rooms_router import router as rooms_router
 
+@asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: initialize database
+    #initialize database
     init_db()
     logger.info("Database initialized")
-    yield
-    # Shutdown: cleanup code goes here if needed
 
 app = FastAPI(
     title="My FastAPI Application",

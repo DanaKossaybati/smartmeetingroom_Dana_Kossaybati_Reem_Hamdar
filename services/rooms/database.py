@@ -37,7 +37,7 @@ def get_db() ->Generator[Session,None,None]:
 
 def init_db():
     """Initialize database tables"""
-    from app.models import User, Room
+    from models import User, Room
     if os.getenv("DOCKER_ENV") == "true":
         Base.metadata.create_all(bind=engine)
         print("Database tables initialized (Docker mode)")
