@@ -12,7 +12,7 @@ from sqlalchemy import func, extract, and_, or_
 from datetime import datetime, timedelta, date
 from typing import Optional
 import json
-
+from utils import cache_response
 
 from auth import get_current_user
 
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/analytics", tags=["Analytics & Insights"])
 # ============================================
 # BOOKING ANALYTICS ENDPOINTS
 # ============================================
-
+@cache_response(expire_seconds=300) 
 @router.get("/bookings/summary")
 async def booking_summary(current_user: dict = Depends(get_current_user)):
     """

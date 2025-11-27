@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import date as date_type
 import traceback
+from utils import cache_response
 
 import schemas
 import auth
@@ -269,6 +270,7 @@ async def cancel_booking(
     ) as e:
         raise e
 
+@cache_response(expire_seconds=60)
 @router.get(
     "/availability/check",
     response_model=schemas.AvailabilityResponse,

@@ -1,11 +1,14 @@
 ﻿"""
 Utility functions for Bookings Service.
-Reusable validation and helper functions.
+Reusable validation, caching and helper functions.
 
 Author: Dana Kossaybati
 """
 from datetime import datetime, date as date_type, time as time_type
 from typing import Tuple
+from redis import Redis
+import json
+from functools import wraps
 
 def sanitize_input(text: str) -> str:
     """
@@ -109,3 +112,54 @@ def times_overlap(
     """
     # Overlap occurs if start1 < end2 AND start2 < end1
     return start1 < end2 and start2 < end1
+
+# Initialize Redis
+try:
+    redis_client = Redis(host='localhost', port=6379, decode_responses=True, socket_connect_timeout=2)
+    redis_client.ping()
+    REDIS_AVAILABLE = True
+except:
+    REDIS_AVAILABLE = False
+    print("Redis not available - running without cache")
+
+
+def cache_response(expire_seconds=300):
+    """
+    Cache API responses in Redis to improve performance.
+
+    Wraps an async endpoint function, stores its return value in Redis,
+    and automatically returns cached results for identical calls until
+    the expiration time is reached.
+
+    Args:
+        expire_seconds: How long the cached value should live in Redis.
+
+    Returns:
+        A wrapped function that returns either the cached response
+        or the fresh response from the original function.
+    """
+    def decorator(func):
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            if not REDIS_AVAILABLE:
+                return await func(*args, **kwargs)
+            
+            # Create cache key from function name and args
+            cache_key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
+            
+            # Check cache
+            cached = redis_client.get(cache_key)
+            if cached:
+                print(f"CACHE HIT: {cache_key}")
+                return json.loads(cached)
+            
+            # Execute function
+            result = await func(*args, **kwargs)
+            
+            # Cache result
+            redis_client.setex(cache_key, expire_seconds, json.dumps(result))
+            print(f"CACHE MISS: {cache_key}")
+            
+            return result
+        return wrapper
+    return decorator
