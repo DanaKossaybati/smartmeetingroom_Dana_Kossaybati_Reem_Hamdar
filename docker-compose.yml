@@ -22,7 +22,7 @@ services:
     networks:
       - meetingroom_network
 
-  # Users Service (Dana)
+  Users Service (Dana)
   users_service:
     build:
       context: ./services/users
@@ -77,34 +77,71 @@ services:
     restart: unless-stopped
 
   # Rooms Service (Reem)
-  # rooms_service:
-  #   image: placeholder/rooms:latest
-  #   container_name: rooms_service
-  #   environment:
-  #     DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
-  #   ports:
-  #     - "8002:8002"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   networks:
-  #     - meetingroom_network
-  #   restart: unless-stopped
+  rooms_service:
+    build:
+      context: ./services/rooms
+      dockerfile: Dockerfile
+    container_name: rooms_service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
+      SECRET_KEY: your-secret-key-change-in-production
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
 
-  # # Reviews Service (Reem)
-  # reviews_service:
-  #   image: placeholder/reviews:latest
-  #   container_name: reviews_service
-  #   environment:
-  #     DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
-  #   ports:
-  #     - "8004:8004"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   networks:
-  #     - meetingroom_network
-  #   restart: unless-stopped
+  # Reviews Service (Reem)
+  reviews_service:
+    build:
+      context: ./services/reviews
+      dockerfile: Dockerfile
+    container_name: reviews_service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
+      SECRET_KEY: your-secret-key-change-in-production
+    ports:  
+      - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: "RabbitMQ"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_DEFAULT_VHOST: /dev
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5 
 
 volumes:
   postgres_data:
