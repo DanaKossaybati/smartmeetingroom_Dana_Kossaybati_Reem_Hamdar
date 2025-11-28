@@ -1,6 +1,7 @@
 """
 Database models for Reviews Service.
-Defines SQLAlchemy ORM models for reviews, rooms, and users.
+Defines SQLAlchemy ORM models for reviews, rooms, and users with proper
+column mappings to match the existing database schema.
 
 Author: Reem Hamdar
 """
@@ -14,14 +15,17 @@ class Review(Base):
     """
     Review model representing user feedback for meeting rooms.
     
+    Maps to the 'reviews' table with column name mappings to match
+    the existing database schema.
+    
     Attributes:
-        id: Primary key, auto-incrementing integer
+        id: Primary key (mapped to review_id column)
         room_id: Foreign key to rooms table
         user_id: Foreign key to users table
         rating: Star rating 1-5 (required)
         comment: Review text content
         is_flagged: Moderation flag for inappropriate content
-        flagged_reason: Explanation if review is flagged
+        flagged_reason: Explanation if review is flagged (mapped to flag_reason)
         created_at: Timestamp when review was created
         updated_at: Timestamp of last modification
         room: Relationship to Room model
@@ -32,23 +36,23 @@ class Review(Base):
         - Rating must be between 1 and 5 stars
         - Flagged reviews may be hidden from public view
     """
-    _tablename_ = "reviews"
+    __tablename__ = "reviews"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    room_id = Column(Integer, ForeignKey("rooms.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
-    rating = Column(Integer,nullable=False)
+    id = Column("review_id", Integer, primary_key=True, index=True, autoincrement=True)
+    room_id = Column(Integer, ForeignKey("rooms.room_id"))
+    user_id = Column(Integer, ForeignKey("users.user_id"))
+    rating = Column(Integer, nullable=False)
     comment = Column(String)
     is_flagged = Column(Boolean, default=False)
-    flagged_reason = Column(String, nullable=True)
-    created_at = Column(DateTime,default=datetime.now(timezone.utc))
-    updated_at = Column(DateTime,default=datetime.now(timezone.utc),onupdate=datetime.now(timezone.utc))
+    flagged_reason = Column("flag_reason", String, nullable=True)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
    
     room = relationship("Room", back_populates="reviews")
-    user = relationship("User",back_populates="user_reviews")
+    user = relationship("User", back_populates="user_reviews")
 
-    def _init_(self, room_id: int, user_id: int, rating: int, comment: str):
+    def __init__(self, room_id: int, user_id: int, rating: int, comment: str):
         """
         Initialize a new Review.
         
@@ -58,7 +62,7 @@ class Review(Base):
             rating: Star rating (1-5)
             comment: Review text
         """
-        super()._init_()
+        super().__init__()
         self.room_id = room_id
         self.user_id = user_id
         self.rating = rating
@@ -73,27 +77,28 @@ class Room(Base):
     
     This is a read-only reference model for room information.
     The authoritative room data lives in the rooms service.
+    Maps to the 'rooms' table with column name mappings.
     
     Attributes:
-        id: Primary key
-        name: Room name
+        id: Primary key (mapped to room_id column)
+        name: Room name (mapped to room_name column)
         capacity: Maximum occupancy
         location: Physical location
-        is_available: Current availability status
+        is_available: Current availability status (mapped to status column)
         reviews: Relationship to Review model
-    """
-    _tablename_ = "rooms"
+    """    
+    __tablename__ = "rooms"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String,nullable=False)
-    capacity = Column(Integer,nullable=False)
+    id = Column("room_id", Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column("room_name", String, nullable=False)
+    capacity = Column(Integer, nullable=False)
     location = Column(String)
-    is_available = Column(Boolean,default=True)
+    is_available = Column("status", String, default='available')
 
     # Only include relationships to models that exist in this service
     reviews = relationship("Review", back_populates="room")
 
-    def _init_(self,name,capacity,location,is_available=True):
+    def __init__(self,name,capacity,location,is_available=True):
         """
         Initialize a Room reference.
         
@@ -103,11 +108,13 @@ class Room(Base):
             location: Physical location
             is_available: Availability status
         """
-        super()._init_()
+        super().__init__()
         self.name = name
         self.capacity = capacity
         self.location = location
         self.is_available = is_available
+
+# Equipment and RoomEquipment models removed - they belong to rooms_service
 
 
 class User(Base):
@@ -129,7 +136,7 @@ class User(Base):
         updated_at: Last profile modification (auto-updated on changes)
         last_login: Tracks user activity for security auditing
     """
-    _tablename_ = "users"
+    __tablename__ = "users"
     
     # Primary key - auto-incremented integer
     user_id = Column(Integer, primary_key=True, index=True)
@@ -187,6 +194,6 @@ class User(Base):
         nullable=True              # Null until first login
     )
     user_reviews=relationship("Review",back_populates="user")
-    def _repr_(self):
+    def __repr__(self):
         """String representation for debugging."""
         return f"<User(username='{self.username}', role='{self.role}')>"

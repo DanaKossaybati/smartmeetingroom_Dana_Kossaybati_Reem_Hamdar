@@ -10,127 +10,137 @@ from sqlalchemy import ForeignKey, Column, Boolean, Integer, String, Date, Time,
 from sqlalchemy.sql import func
 
 
-class Room(Base):
-    """
-    Room model representing meeting rooms.
-    
-    Attributes:
-        id: Primary key, auto-incrementing integer
-        name: Room name (required)
-        capacity: Maximum number of people (required)
-        location: Physical location of the room
-        is_available: Current availability status (default: True)
-        room_equipment: Relationship to equipment in this room
-    
-    Relationships:
-        - One-to-many with RoomEquipment (cascade delete)
-    """
-    __tablename__ = "rooms"
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String,nullable=False)
-    capacity = Column(Integer,nullable=False)
-    location = Column(String)
-    is_available = Column(Boolean,default=True)
-
-
-    # Relationships to models in this service only
-    room_equipment = relationship("RoomEquipment", back_populates="room",cascade="all, delete-orphan")
-
-    def __init__(self,name,capacity,location,is_available=True):
-        """
-        Initialize a new Room.
-        
-        Args:
-            name: Room name
-            capacity: Maximum capacity
-            location: Physical location
-            is_available: Initial availability status (default: True)
-        """
-        super().__init__()
-        self.name = name
-        self.capacity = capacity
-        self.location = location
-        self.is_available = is_available
-    
-class Equipment(Base):
-    """
-    Equipment model representing room amenities and resources.
-    
-    Attributes:
-        id: Primary key, auto-incrementing integer
-        name: Equipment name (required)
-        room_equip: Relationship to rooms that have this equipment
-    
-    Relationships:
-        - One-to-many with RoomEquipment (cascade delete)
-    
-    Examples:
-        - Projector
-        - Whiteboard
-        - Conference Phone
-        - Video Camera
-    """
-    __tablename__ = "equipment"
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String,nullable=False)
-
-    room_equip=relationship("RoomEquipment", back_populates="equipment",cascade="all, delete-orphan")
-
-    def __init__(self, name:str):
-        """
-        Initialize new Equipment.
-        
-        Args:
-            name: Equipment name
-        """
-        super().__init__()
-        self.name = name
-
 class RoomEquipment(Base):
     """
-    Association table linking rooms and equipment with quantities.
+    Association table linking rooms to equipment with quantities.
     
-    This is a many-to-many relationship table that tracks:
-    - Which equipment is in which room
-    - How many units of each equipment
+    This model represents the many-to-many relationship between rooms
+    and equipment, allowing each room to have multiple equipment items
+    and each equipment type to be in multiple rooms.
     
     Attributes:
         room_id: Foreign key to rooms table (composite primary key)
-        equipment_id: Foreign key to equipments table (composite primary key)
-        quantity: Number of units (default: 1)
-        room: Relationship back to Room
-        equipment: Relationship back to Equipment
+        equipment_id: Foreign key to equipment table (composite primary key)
+        quantity: Number of equipment units in the room (default: 1)
+        room: Relationship to Room model
+        equipment: Relationship to Equipment model
     
-    Example:
-        Room "Board Room" has:
-        - 2x Projectors (quantity=2)
-        - 1x Whiteboard (quantity=1)
+    Note:
+        Uses composite primary key (room_id, equipment_id) to ensure
+        each equipment type can only be assigned once per room.
     """
     __tablename__ = "room_equipment"
-   
-    room_id = Column(Integer, ForeignKey("rooms.id") ,primary_key=True)
-    equipment_id = Column(Integer, ForeignKey("equipment.id"),primary_key=True)
-    quantity = Column(Integer,default=1)
 
+    room_id = Column(Integer, ForeignKey("rooms.room_id"), primary_key=True)
+    equipment_id = Column(Integer, ForeignKey("equipment.equipment_id"), primary_key=True)
+    quantity = Column(Integer, default=1)
 
     room = relationship("Room", back_populates="room_equipment")
-    equipment = relationship("Equipment", back_populates="room_equip")
-    
+    equipment = relationship("Equipment", back_populates="room_equipment")
+
     def __init__(self, room_id:int,equipment_id:int,quantity:int=1):
         """
-        Initialize room-equipment association.
+        Initialize a room-equipment association.
         
         Args:
             room_id: ID of the room
             equipment_id: ID of the equipment
-            quantity: Number of units (default: 1)
+            quantity: Number of equipment units (default: 1)
         """
         super().__init__()
         self.room_id = room_id
         self.equipment_id = equipment_id
         self.quantity = quantity
 
+class Room(Base):
+    """
+    Room model representing meeting rooms in the system.
+    
+    Maps to the 'rooms' table in the database with column name mappings
+    to match the existing database schema.
+    
+    Attributes:
+        id: Primary key (mapped to room_id column)
+        name: Room name (mapped to room_name column)
+        capacity: Maximum occupancy
+        location: Physical location of the room
+        is_available: Availability status (mapped to status column)
+        room_equipment: Relationship to RoomEquipment association table
+    
+    Business Rules:
+        - Room names should be unique
+        - Capacity must be positive
+        - Status must be: 'available', 'unavailable', or 'maintenance'
+        - Deleting a room cascades to remove all equipment associations
+    """    
+    __tablename__ = "rooms"
 
-# User and Booking models removed - they belong to users_service and bookings_service respectively
-# In microservices architecture, each service owns its domain models
+    id = Column("room_id", Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column("room_name", String, nullable=False)
+    capacity = Column(Integer, nullable=False)
+    location = Column(String)
+    is_available = Column("status",String, default='available')
+
+    # Relationships to models in this service only
+    room_equipment = relationship("RoomEquipment", back_populates="room", cascade="all, delete-orphan")
+
+    def __init__(self,name,capacity,location,is_available='available'):
+        """
+        Initialize a new Room.
+        
+        Args:
+            name: Room name/identifier
+            capacity: Maximum number of people
+            location: Physical location description
+            is_available: Initial availability status (default: 'available')
+                         Can be 'available', 'unavailable', or 'maintenance'
+        
+        Note:
+            Handles both boolean and string values for backward compatibility.
+            Boolean True maps to 'available', False maps to 'unavailable'.
+        """
+        super().__init__()
+        self.name = name
+        self.capacity = capacity
+        self.location = location
+        # Handle both boolean and string values for status
+        if isinstance(is_available, bool):
+            self.is_available = 'available' if is_available else 'unavailable'
+        else:
+            self.is_available = is_available
+    
+class Equipment(Base):
+    """
+    Equipment model representing available meeting room equipment.
+    
+    Maps to the 'equipment' table with column name mappings to match
+    the existing database schema.
+    
+    Attributes:
+        id: Primary key (mapped to equipment_id column)
+        name: Equipment name/type (mapped to equipment_name column)
+        room_equipment: Relationship to RoomEquipment association table
+    
+    Examples:
+        - Projector
+        - Whiteboard
+        - Conference Phone
+        - Smart TV
+        - HD Camera
+    """    
+    __tablename__ = "equipment"
+    
+    id = Column("equipment_id", Integer, primary_key=True, index=True, autoincrement=True)
+    name = Column("equipment_name", String, nullable=False)
+
+    room_equipment = relationship("RoomEquipment", back_populates="equipment", cascade="all, delete-orphan")
+
+    def __init__(self, name:str):
+        """
+        Initialize a new Equipment.
+        
+        Args:
+            name: Equipment type/name (e.g., "Projector", "Whiteboard")
+        """
+        super().__init__()
+        self.name = name
