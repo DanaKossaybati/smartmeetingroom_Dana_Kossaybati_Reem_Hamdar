@@ -1,0 +1,14 @@
+{
+  "service": "users",
+  "timestamp": "2025-11-28T21:29:07.378594",
+  "memory": {
+    "start_mb": 16.65,
+    "end_mb": 16.8,
+    "used_mb": 0.14,
+    "peak_mb": 16.8
+  },
+  "performance": {
+    "execution_time_seconds": 1.61,
+    "tests_passed": "No"
+  }
+}

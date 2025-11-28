@@ -1,0 +1,174 @@
+{
+  "service": "bookings",
+  "generated_at": "2025-11-28T20:06:39.520206",
+  "coverage": {
+    "timestamp": "2025-11-28T20:06:25.188602",
+    "test_execution_time": 11.188176155090332,
+    "test_status": "PASSED",
+    "files": {
+      "analytics.py": {
+        "coverage": 12.972972972972974,
+        "lines": 185,
+        "covered": 24,
+        "missing": 161
+      },
+      "auth.py": {
+        "coverage": 47.82608695652174,
+        "lines": 23,
+        "covered": 11,
+        "missing": 12
+      },
+      "database.py": {
+        "coverage": 73.33333333333333,
+        "lines": 15,
+        "covered": 11,
+        "missing": 4
+      },
+      "errors.py": {
+        "coverage": 100.0,
+        "lines": 16,
+        "covered": 16,
+        "missing": 0
+      },
+      "main.py": {
+        "coverage": 88.23529411764706,
+        "lines": 17,
+        "covered": 15,
+        "missing": 2
+      },
+      "models.py": {
+        "coverage": 93.61702127659575,
+        "lines": 47,
+        "covered": 44,
+        "missing": 3
+      },
+      "profiling_bookings.py": {
+        "coverage": 0.0,
+        "lines": 173,
+        "covered": 0,
+        "missing": 173
+      },
+      "routes.py": {
+        "coverage": 87.0,
+        "lines": 100,
+        "covered": 87,
+        "missing": 13
+      },
+      "schemas.py": {
+        "coverage": 100.0,
+        "lines": 30,
+        "covered": 30,
+        "missing": 0
+      },
+      "services.py": {
+        "coverage": 95.0354609929078,
+        "lines": 141,
+        "covered": 134,
+        "missing": 7
+      },
+      "__init__.py": {
+        "coverage": 100.0,
+        "lines": 0,
+        "covered": 0,
+        "missing": 0
+      },
+      "conftest.py": {
+        "coverage": 93.80530973451327,
+        "lines": 113,
+        "covered": 106,
+        "missing": 7
+      },
+      "utils.py": {
+        "coverage": 73.58490566037736,
+        "lines": 53,
+        "covered": 39,
+        "missing": 14
+      }
+    },
+    "total_coverage_percent": 76.15894039735099,
+    "total_lines": 1661,
+    "covered_lines": 1265,
+    "missing_lines": 396
+  },
+  "performance": {
+    "timestamp": "2025-11-28T20:06:25.207598",
+    "code_metrics": {
+      "files": [
+        {
+          "name": "analytics.py",
+          "loc": 780,
+          "functions": 9,
+          "classes": 0
+        },
+        {
+          "name": "auth.py",
+          "loc": 68,
+          "functions": 4,
+          "classes": 0
+        },
+        {
+          "name": "database.py",
+          "loc": 39,
+          "functions": 2,
+          "classes": 1
+        },
+        {
+          "name": "errors.py",
+          "loc": 57,
+          "functions": 5,
+          "classes": 5
+        },
+        {
+          "name": "main.py",
+          "loc": 62,
+          "functions": 2,
+          "classes": 0
+        },
+        {
+          "name": "models.py",
+          "loc": 146,
+          "functions": 3,
+          "classes": 3
+        },
+        {
+          "name": "profiling_bookings.py",
+          "loc": 220,
+          "functions": 6,
+          "classes": 1
+        },
+        {
+          "name": "routes.py",
+          "loc": 631,
+          "functions": 9,
+          "classes": 0
+        },
+        {
+          "name": "schemas.py",
+          "loc": 123,
+          "functions": 1,
+          "classes": 8
+        },
+        {
+          "name": "services.py",
+          "loc": 486,
+          "functions": 13,
+          "classes": 2
+        },
+        {
+          "name": "utils.py",
+          "loc": 120,
+          "functions": 6,
+          "classes": 0
+        }
+      ],
+      "total_loc": 2732,
+      "total_functions": 60,
+      "total_classes": 20
+    },
+    "test_metrics": {
+      "unit_tests_time": 4.586793661117554,
+      "routes_tests_time": 6.04125714302063,
+      "edge_case_tests_time": 3.677919864654541
+    }
+  }
+}

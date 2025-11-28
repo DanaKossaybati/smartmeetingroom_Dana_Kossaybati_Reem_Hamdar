@@ -1,0 +1,27 @@
+BOOKINGS SERVICE PROFILING REPORT
+======================================================================
+Generated: 2025-11-28T20:06:39.521382
+Author: Dana Kossaybati
+
+COVERAGE METRICS
+----------------------------------------------------------------------
+Total Coverage: 76.2%
+Total Lines: 1661
+Covered Lines: 1265
+Missing Lines: 396
+Test Status: PASSED
+Test Execution Time: 11.19s
+
+CODE METRICS
+----------------------------------------------------------------------
+Total Lines of Code: 2732
+Total Functions: 60
+Total Classes: 20
+Number of Modules: 11
+
+TEST PERFORMANCE
+----------------------------------------------------------------------
+Unit Tests: 4.59s
+Routes Tests: 6.04s
+Edge Case Tests: 3.68s
+Total: 14.31s

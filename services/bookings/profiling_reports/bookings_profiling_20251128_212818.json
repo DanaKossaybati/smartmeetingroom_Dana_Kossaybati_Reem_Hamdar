@@ -1,0 +1,14 @@
+{
+  "service": "bookings",
+  "timestamp": "2025-11-28T21:28:18.455377",
+  "memory": {
+    "start_mb": 16.72,
+    "end_mb": 16.83,
+    "used_mb": 0.11,
+    "peak_mb": 16.83
+  },
+  "performance": {
+    "execution_time_seconds": 10.23,
+    "tests_passed": "Yes"
+  }
+}
