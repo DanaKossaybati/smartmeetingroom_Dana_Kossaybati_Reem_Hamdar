@@ -25,7 +25,20 @@ router=APIRouter(
     tags=["rooms"]
 )
 cache=Cache(Cache.MEMORY,serializer=JsonSerializer())
+
 def check_admin_manager_role(user_id_role:dict[str,str]):
+    """
+    Verify user has admin or facility manager role.
+    
+    Helper function to enforce role-based access control for
+    room management operations.
+    
+    Args:
+        user_id_role: Dictionary containing 'user_id' and 'role' keys
+    
+    Raises:
+        HTTPException: 403 if user lacks required permissions
+    """
     user_id=user_id_role['user_id']
     user_role=user_id_role['role']
 
@@ -34,7 +47,22 @@ def check_admin_manager_role(user_id_role:dict[str,str]):
 
 @router.post("/create",status_code=201)
 async def create_room(request:RoomCreateRequest, db:Session=Depends(get_db), user_id_role:dict[str,str]=Depends(get_current_user)):
-
+    """
+    Create a new meeting room.
+    
+    Requires admin or facility_manager role.
+    
+    Args:
+        request: Room creation data (name, capacity, location)
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        Empty dict on success
+    
+    Raises:
+        HTTPException: 403 if unauthorized, 400 if invalid details
+    """
     check_admin_manager_role(user_id_role)
     
     room= Room(request.name,request.capacity,request.location)
@@ -47,6 +75,23 @@ async def create_room(request:RoomCreateRequest, db:Session=Depends(get_db), use
 @router.put("/update{room_id}",status_code=204)
 async def update_room(room_id:int, request:RoomUpdateRequest,
                       db:Session=Depends(get_db), user_id_role:dict[str,str]=Depends(get_current_user)):
+    """
+    Update an existing room's details and equipment.
+    
+    Requires admin or facility_manager role.
+    
+    Args:
+        room_id: ID of the room to update
+        request: Updated room data (name, capacity, location, status, equipments)
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        Empty dict on success
+    
+    Raises:
+        HTTPException: 403 if unauthorized, 404 if room not found
+    """
     check_admin_manager_role(user_id_role)
     
     room:Room|None=(db.query(Room)
@@ -54,30 +99,53 @@ async def update_room(room_id:int, request:RoomUpdateRequest,
                          .filter(Room.id==room_id).first())
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
-    equip=db.query(Equipment).filter(Equipment.name==request.equipment.name).all()
     
+    # Clear existing equipment
     room.room_equipment.clear()
     
-    equipments=[{"id":eq.id,"quantity":eq2.quantity}
-                for eq in equip 
-                for eq2 in request.equipment if eq.name==request.equipment.name]
-  
+    # Add new equipment if provided
+    if request.equipments:
+        for equipment_req in request.equipments:
+            # Find equipment by name
+            equipment = db.query(Equipment).filter(Equipment.name == equipment_req.name).first()
+            if equipment:
+                # Add room-equipment relationship
+                room.room_equipment.append(
+                    RoomEquipment(
+                        room_id=room_id,
+                        equipment_id=equipment.id,
+                        quantity=equipment_req.quantity
+                    )
+                )
     
-    for eq in equipments:
-        room.room_equipment.append(RoomEquipment(room_id=room_id,equipment_id=eq["id"],quantity=1))
-        
-        
-    room.name=request.name
-    room.capacity=request.capacity
-    room.location=request.location
-    room.status=request.status
+    # Update room details
+    room.name = request.name
+    room.capacity = request.capacity
+    room.location = request.location
+    room.is_available = request.status
     db.commit()
     return {}
 
 
-@router.delete("/delete{name}",status_code=204)
+@router.delete("/delete/{name}",status_code=204)
 async def delete_room(name:str, db:Session=Depends(get_db), user_id_role:dict[str,str]=Depends(get_current_user)):
-
+    """
+    Delete a room by name.
+    
+    Requires admin or facility_manager role.
+    Cascades to remove all associated equipment.
+    
+    Args:
+        name: Name of the room to delete
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        Empty dict on success
+    
+    Raises:
+        HTTPException: 403 if unauthorized, 404 if room not found
+    """
     check_admin_manager_role(user_id_role)
     
     room:Room|None=(db.query(Room)
@@ -99,6 +167,26 @@ async def get_available_rooms(
         db: Session = Depends(get_db),
         user_id_role: dict[str, str] = Depends(get_current_user)
 ):
+    """
+    Get list of available rooms with optional filtering.
+    
+    Supports filtering by capacity, location, and equipment.
+    Results are cached for 5 minutes per user.
+    
+    Args:
+        capacity: Minimum capacity required (optional)
+        location: Room location filter (optional)
+        equipment: Equipment name filter (optional)
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        RoomResponseList: List of rooms matching the filters
+    
+    Caching:
+        - Cache key: rooms:{user_id}
+        - TTL: 300 seconds (5 minutes)
+    """
     user_id = user_id_role['user_id']
     cached_rooms = await cache.get(f"rooms:{user_id}")
 
@@ -122,7 +210,7 @@ async def get_available_rooms(
             "name": room.name,
             "capacity": room.capacity,
             "location": room.location,
-            "is_available": room.is_available,
+            "status": room.is_available,  # Changed from is_available to status
             "room_equipment": [{"equipment_name": re.equipment.name} for re in room.room_equipment]
         } for room in rooms]
         await cache.set(f"rooms:{user_id}", rooms_serialized, ttl=300)
@@ -133,7 +221,7 @@ async def get_available_rooms(
             name=room["name"],
             capacity=room["capacity"],
             location=room["location"],
-            is_available=room["is_available"],
+            status=room["status"],  # Changed from is_available to status
             equipments=[eq["equipment_name"] for eq in room["room_equipment"]]
         )
         for room in rooms_serialized
@@ -143,8 +231,27 @@ async def get_available_rooms(
 
 @router.get("/status/{name}",status_code=200)
 async def get_room_status(name:str, db:Session=Depends(get_db), user_id_role:dict[str,str]=Depends(get_current_user)):
+    """
+    Get availability status of a specific room.
     
+    Returns the current status (available/unavailable/maintenance) of a room by name.
+    Results are cached for 5 minutes per user.
     
+    Args:
+        name: Name of the room to check
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        dict: {"status": str} - current room status
+    
+    Raises:
+        HTTPException: 404 if room not found
+    
+    Caching:
+        - Cache key: status:{user_id}
+        - TTL: 300 seconds (5 minutes)
+    """
     user_id=user_id_role['user_id']
 
     cached_status = await cache.get(f"status:{user_id}")

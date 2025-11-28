@@ -48,26 +48,37 @@ class EquipmentCreateRequest(BaseModel):
     
 class RoomUpdateRequest(RoomCreateRequest):
     """
-    Schema for updating existing room details.
+    Schema for updating an existing room.
     
-    Extends RoomCreateRequest with equipment list.
+    Extends RoomCreateRequest with additional fields for status and equipment.
     
     Attributes:
         name: Updated room name
         capacity: Updated capacity
         location: Updated location
-        equipments: List of equipment items with quantities
+        status: Room availability status ('available', 'unavailable', 'maintenance')
+        equipments: List of equipment assignments
     
     Validation:
-        - All validations from RoomCreateRequest
-        - Equipment list cannot be empty
+        - Status must be one of: 'available', 'unavailable', 'maintenance'
+        - Equipments list cannot be empty if provided
     """
-    equipments:List[EquipmentCreateRequest]
+    status: str = 'available'  # Add status field with default value
+    equipments:List[EquipmentCreateRequest] = []
+
+    @field_validator('status')
+    @classmethod
+    def validate_status(cls, value):
+        """Ensure status is valid."""
+        valid_statuses = ['available', 'unavailable', 'maintenance']
+        if value not in valid_statuses:
+            raise ValueError(f"Status must be one of {valid_statuses}")
+        return value
 
     @field_validator('equipments')
     @classmethod
     def validate_equipments(cls, value):
-        """Ensure at least one equipment item is provided."""
+        """Ensure equipments list is not empty if provided."""
         if not value:
             raise ValueError("Equipments list cannot be empty")
         return value
@@ -76,28 +87,38 @@ class RoomUpdateRequest(RoomCreateRequest):
     
 class RoomResponse(BaseModel):
     """
-    Schema for room data in API responses.
+    Schema for room response data.
     
     Attributes:
         name: Room name
         capacity: Maximum occupancy
         location: Physical location
-        is_available: Current availability status
-        equipments: List of equipment names in the room
-    """
+        status: Current availability status
+        equipments: List of equipment names available in the room
+    
+    Validation:
+        - Status must be one of: 'available', 'unavailable', 'maintenance'
+    """    
     name: str
     capacity: int
     location: str
-    is_available:bool
+    status: str  # Changed from is_available (bool) to status (string: 'available', 'unavailable', 'maintenance')
     equipments:List[str]
+
+    @field_validator('status')
+    @classmethod
+    def validate_status(cls, value):
+        """Ensure status is valid."""
+        valid_statuses = ['available', 'unavailable', 'maintenance']
+        if value not in valid_statuses:
+            raise ValueError(f"Status must be one of {valid_statuses}")
+        return value
 
 class RoomResponseList(BaseModel):
     """
-    Schema for list of rooms in API responses.
-    
-    Used by GET /api/v1/rooms endpoint.
+    Schema for list of rooms response.
     
     Attributes:
-        rooms: Array of room objects
-    """
+        rooms: List of RoomResponse objects
+    """    
     rooms:List[RoomResponse]

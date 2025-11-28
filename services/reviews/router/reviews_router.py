@@ -28,54 +28,46 @@ cache=Cache(Cache.MEMORY,serializer=JsonSerializer())
 
 def check_admin_moderator_role(user_id_role:dict[str,str]):
     """
-    Verify user has admin or moderator role for moderation operations.
+    Verify user has admin or moderator role.
+    
+    Helper function to enforce role-based access control for
+    review moderation operations.
     
     Args:
-        user_id_role: Dictionary containing user_id and role from JWT token
+        user_id_role: Dictionary containing 'user_id' and 'role' keys
     
     Raises:
-        HTTPException 403: If user lacks required permissions
+        HTTPException: 403 if user lacks required permissions
     """
     user_id=user_id_role['user_id']
     user_role=user_id_role['role']
 
-    if user_role not in [UserRole.admin.value,UserRole.moderator.value] or user_id is not None:
+    if user_role not in [UserRole.admin.value,UserRole.moderator.value] or user_id is  None:
         raise HTTPException(status_code=403,detail="Not authorized to perform this action")
 
-@router.post("/create", status_code=201, summary="Create a new review", description="Submit a review and rating for a room")
+@router.post("/create", status_code=201)
 async def create_review(
     request: ReviewRequest,
     db: Session = Depends(get_db),
         user_id_role: dict[str,str] = Depends(get_current_user),
 ):
     """
-    Create a new review for a meeting room.
+    Create a new review for a room.
     
-    **Authorization:**
-    - Requires User or Manager role
-    - Each user can only review a room once
+    Regular users can create reviews. Users can only review
+    each room once.
     
-    **Request Body:**
-    - room_id: UUID of the room being reviewed
-    - rating: Star rating (1-5)
-      - 1 = Poor
-      - 2 = Fair
-      - 3 = Good
-      - 4 = Very Good
-      - 5 = Excellent
-    - comment: Review text (10-500 characters)
+    Args:
+        request: Review data (room_id, rating, comment)
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Validation:**
-    - Room must exist
-    - User cannot review the same room twice
-    - Rating must be between 1 and 5
+    Returns:
+        None on success
     
-    **Returns:**
-    - 201: Review created successfully
-    - 400: User has already reviewed this room
-    - 403: Unauthorized (not user/manager)
-    - 404: Room not found
-    - 422: Invalid rating or comment format
+    Raises:
+        HTTPException: 403 if unauthorized, 404 if room not found,
+                      400 if user already reviewed this room
     """
     if user_id_role['role'] in [UserRole.user.value, UserRole.manager.value ]:
         raise HTTPException(status_code=403, detail="Only users can create reviews")
@@ -104,7 +96,7 @@ async def create_review(
 
     return None
 
-@router.put("{review_id}",status_code=204, summary="Update a review", description="Modify an existing review (owner only)")
+@router.put("{review_id}",status_code=204)
 async def update_review(
     review_id: int,
     request: ReviewUpdateRequest,
@@ -114,24 +106,21 @@ async def update_review(
     """
     Update an existing review.
     
-    **Authorization:**
-    - Only the review author can update their review
-    - Requires User or Manager role
+    Only the review author can update their own review.
     
-    **Path Parameters:**
-    - review_id: ID of the review to update
+    Args:
+        review_id: ID of the review to update
+        request: Updated review data (rating, comment)
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Request Body:**
-    - rating: Updated star rating (1-5)
-    - comment: Updated review text
+    Returns:
+        None on success
     
-    **Returns:**
-    - 204: Review updated successfully
-    - 403: Unauthorized (not review owner)
-    - 404: Review not found
-    - 422: Invalid data format
+    Raises:
+        HTTPException: 403 if unauthorized or not author,
+                      404 if review not found
     """
-
     if user_id_role['role'] in [UserRole.user.value, UserRole.manager.value ]:
         raise HTTPException(status_code=403, detail="Only users can create reviews")
     
@@ -154,32 +143,29 @@ async def update_review(
     
     return None
 
-@router.delete("/{review_id}", status_code=204, summary="Delete a review", description="Remove a review (owner or admin only)")
+@router.delete("/{review_id}", status_code=204)
 async def delete_review(
     review_id: int,
     db: Session = Depends(get_db),
         user_id_role: dict[str,str] = Depends(get_current_user),
 ):
     """
-    Delete a review from the system.
+    Delete a review.
     
-    **Authorization:**
-    - Review author can delete their own review
-    - Admins can delete any review
-    - Requires User, Manager, or Admin role
+    Only the review author can delete their own review.
     
-    **Path Parameters:**
-    - review_id: ID of the review to delete
+    Args:
+        review_id: ID of the review to delete
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Behavior:**
-    - Permanent deletion - cannot be undone
+    Returns:
+        None on success
     
-    **Returns:**
-    - 204: Review deleted successfully
-    - 403: Unauthorized (not review owner or admin)
-    - 404: Review not found
+    Raises:
+        HTTPException: 403 if unauthorized or not author,
+                      404 if review not found
     """
-
     if user_id_role['role'] in [UserRole.user.value, UserRole.manager.value ]:
         raise HTTPException(status_code=403, detail="Only users can create reviews")
 
@@ -197,7 +183,144 @@ async def delete_review(
     return None
 
 
-@router.get("/{room_id}", response_model=ReviewListResponse, status_code=200, summary="Get room reviews", description="Retrieve all reviews for a specific room with average rating")
+@router.get("/flagged", response_model=ReviewListResponse, status_code=200)
+async def get_flagged_reviews(
+    db: Session = Depends(get_db),
+        user_id_role: dict[str,str] = Depends(get_current_user),
+):
+    """
+    Get all flagged reviews.
+    
+    Requires admin or moderator role.
+    Returns only reviews marked as flagged for moderation.
+    Results are cached per user for 5 minutes.
+    
+    Args:
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        ReviewListResponse: List of flagged reviews with total count
+    
+    Raises:
+        HTTPException: 403 if unauthorized
+    
+    Caching:
+        - Cache key: all_flagged_reviews:{user_id}
+        - TTL: 300 seconds (5 minutes)
+    """
+    # Get all flagged reviews
+    check_admin_moderator_role(user_id_role)
+    user_id = user_id_role['user_id']
+
+    cached_reviews = await cache.get(f"all_flagged_reviews:{user_id}")
+    if cached_reviews:
+        reviews_data = cached_reviews
+    else:
+        reviews = db.query(Review).options(
+            joinedload(Review.room),
+            joinedload(Review.user)
+        ).filter(Review.is_flagged == True).all()
+        
+        # Serialize reviews to dictionaries for caching
+        reviews_data = [
+            {
+                "id": review.id,
+                "room_id": review.room_id,
+                "room_name": review.room.name,
+                "user_id": review.user_id,
+                "username": review.user.username,
+                "rating": review.rating,
+                "comment": review.comment,
+                "is_flagged": review.is_flagged,
+                "flagged_reason": review.flagged_reason,
+                "created_at": review.created_at.isoformat() if review.created_at else None,
+                "updated_at": review.updated_at.isoformat() if review.updated_at else None
+            }
+            for review in reviews
+        ]
+        await cache.set(f"all_flagged_reviews:{user_id}", reviews_data, ttl=300)
+    
+    review_responses = [
+        ReviewResponse(**review_dict)
+        for review_dict in reviews_data
+    ]
+    
+    return ReviewListResponse(
+        reviews=review_responses,
+        total=len(reviews_data),
+        average_rating=None
+    )
+
+
+@router.get("/", response_model=ReviewListResponse, status_code=200)
+async def get_all_reviews(
+    db: Session = Depends(get_db),
+        user_id_role: dict[str,str] = Depends(get_current_user),
+):
+    """
+    Get all reviews in the system.
+    
+    Returns all reviews regardless of flag status.
+    Results are cached per user for 5 minutes.
+    
+    Args:
+        db: Database session
+        user_id_role: Current user authentication info
+    
+    Returns:
+        ReviewListResponse: List of all reviews with total count
+    
+    Caching:
+        - Cache key: all_reviews:{user_id}
+        - TTL: 300 seconds (5 minutes)
+    """
+    # Get all reviews
+    #check_admin_moderator_role(user_id_role)
+    
+    user_id = user_id_role['user_id']
+    
+    cached_reviews = await cache.get(f"all_reviews:{user_id}")
+    if cached_reviews:
+        reviews_data = cached_reviews
+    else:
+        reviews = db.query(Review).options(
+            joinedload(Review.room),
+            joinedload(Review.user)
+        ).all()
+        
+        # Serialize reviews to dictionaries for caching
+        reviews_data = [
+            {
+                "id": review.id,
+                "room_id": review.room_id,
+                "room_name": review.room.name,
+                "user_id": review.user_id,
+                "username": review.user.username,
+                "rating": review.rating,
+                "comment": review.comment,
+                "is_flagged": review.is_flagged,
+                "flagged_reason": review.flagged_reason,
+                "created_at": review.created_at.isoformat() if review.created_at else None,
+                "updated_at": review.updated_at.isoformat() if review.updated_at else None
+            }
+            for review in reviews
+        ]
+        await cache.set(f"all_reviews:{user_id}", reviews_data, ttl=300)
+    
+    review_responses = [
+        ReviewResponse(**review_dict)
+        for review_dict in reviews_data
+    ]
+    
+    return ReviewListResponse(
+        reviews=review_responses,
+        total=len(reviews_data),
+        average_rating=None
+    )
+
+
+@router.get("/{room_id}", response_model=ReviewListResponse, status_code=200)
 async def get_room_reviews(
     room_id: int,
     db: Session = Depends(get_db),
@@ -206,37 +329,29 @@ async def get_room_reviews(
     """
     Get all reviews for a specific room.
     
-    **Authorization:**
-    - Requires authentication (any role)
+    Returns reviews with calculated average rating.
+    Results are cached per user for 5 minutes.
     
-    **Path Parameters:**
-    - room_id: UUID of the room
+    Args:
+        room_id: ID of the room to get reviews for
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Caching:**
-    - Reviews cached for 5 minutes per user
-    - Improves performance for repeated queries
+    Returns:
+        ReviewListResponse: List of reviews with total count and average rating
     
-    **Returns:**
-    - 200: List of reviews with metadata
-    - 401: Unauthorized (no valid token)
-    - 404: Room not found
+    Raises:
+        HTTPException: 404 if room not found
     
-    **Response includes:**
-    - List of all reviews (with user and room details)
-    - Total review count
-    - Average rating (calculated from all reviews)
-    - Individual review details:
-      - Review ID, rating, comment
-      - User information (ID, username)
-      - Room information (ID, name)
-      - Flagged status and reason (if flagged)
-      - Timestamps (created_at, updated_at)
+    Caching:
+        - Cache key: review:{room_id}:{user_id}
+        - TTL: 300 seconds (5 minutes)
     """
-    user_id=user_id_role['user_id']
+    user_id = user_id_role['user_id']
 
-    cached_reviews= await cache.get(f"review:{user_id}")
+    cached_reviews = await cache.get(f"review:{room_id}:{user_id}")
     if cached_reviews:
-        reviews = cached_reviews
+        reviews_data = cached_reviews
     else:
         room = db.query(Room).filter(Room.id == room_id).first()
         if not room:
@@ -246,38 +361,44 @@ async def get_room_reviews(
             joinedload(Review.room),
             joinedload(Review.user)
         ).filter(Review.room_id == room_id).all()
-        await cache.set(f"review:{user_id}", reviews)
+        
+        # Serialize reviews to dictionaries for caching
+        reviews_data = [
+            {
+                "id": review.id,
+                "room_id": review.room_id,
+                "room_name": review.room.name,
+                "user_id": review.user_id,
+                "username": review.user.username,
+                "rating": review.rating,
+                "comment": review.comment,
+                "is_flagged": review.is_flagged,
+                "flagged_reason": review.flagged_reason,
+                "created_at": review.created_at.isoformat() if review.created_at else None,
+                "updated_at": review.updated_at.isoformat() if review.updated_at else None
+            }
+            for review in reviews
+        ]
+        await cache.set(f"review:{room_id}:{user_id}", reviews_data, ttl=300)
 
     average_rating = None
-    if reviews:
-        total_rating = sum(review.rating for review in reviews)
-        average_rating = round(total_rating / len(reviews), 2)
+    if reviews_data:
+        total_rating = sum(review["rating"] for review in reviews_data)
+        average_rating = round(total_rating / len(reviews_data), 2)
     
     review_responses = [
-        ReviewResponse(
-            id=review.id,
-            room_id=review.room_id,
-            room_name=review.room.name,
-            user_id=review.user_id,
-            username=review.user.username,
-            rating=review.rating,
-            comment=review.comment,
-            is_flagged=review.is_flagged,
-            flagged_reason=review.flagged_reason,
-            created_at=review.created_at,
-            updated_at=review.updated_at
-        )
-        for review in reviews
+        ReviewResponse(**review_dict)
+        for review_dict in reviews_data
     ]
     
     return ReviewListResponse(
         reviews=review_responses,
-        total=len(reviews),
+        total=len(reviews_data),
         average_rating=average_rating
     )
 
 
-@router.post("/{review_id}/flag",status_code=204, summary="Flag a review", description="Mark a review as inappropriate for moderation (Admin/Moderator only)")
+@router.post("/{review_id}/flag",status_code=204)
 async def flag_review(
     review_id: int,
     request: FlagReviewRequest,
@@ -285,29 +406,23 @@ async def flag_review(
         user_id_role: dict[str,str] = Depends(get_current_user),
 ):
     """
-    Flag a review as inappropriate (moderation action).
+    Flag a review as inappropriate (moderation).
     
-    **Authorization:**
-    - Requires Admin or Moderator role
+    Requires admin or moderator role.
+    Adds a flag with a reason for moderation tracking.
     
-    **Path Parameters:**
-    - review_id: ID of the review to flag
+    Args:
+        review_id: ID of the review to flag
+        request: Flag reason data
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Request Body:**
-    - reason: Explanation for flagging (required)
-      - Examples: "Inappropriate language", "Spam", "Off-topic"
+    Returns:
+        None on success
     
-    **Behavior:**
-    - Marks review as flagged for moderator review
-    - Does not delete the review
-    - Flagged reviews may be hidden from public view
-    
-    **Returns:**
-    - 204: Review flagged successfully
-    - 403: Unauthorized (not admin/moderator)
-    - 404: Review not found
+    Raises:
+        HTTPException: 403 if unauthorized, 404 if review not found
     """
-
     check_admin_moderator_role(user_id_role)
     
     review = db.query(Review).filter(Review.id == review_id).first()
@@ -324,30 +439,28 @@ async def flag_review(
     return None
 
 
-@router.post("/{review_id}/unflag",  status_code=204, summary="Unflag a review", description="Remove inappropriate flag from a review (Admin/Moderator only)")
+@router.post("/{review_id}/unflag",  status_code=204)
 async def unflag_review(
     review_id: int,
     db: Session = Depends(get_db),
         user_id_role: dict[str,str] = Depends(get_current_user),
 ):
     """
-    Unflag a review (remove inappropriate flag).
+    Unflag a review (remove moderation flag).
     
-    **Authorization:**
-    - Requires Admin or Moderator role
+    Requires admin or moderator role.
+    Removes the flag and clears the flag reason.
     
-    **Path Parameters:**
-    - review_id: ID of the review to unflag
+    Args:
+        review_id: ID of the review to unflag
+        db: Database session
+        user_id_role: Current user authentication info
     
-    **Behavior:**
-    - Removes flag from review
-    - Clears the flagged_reason field
-    - Review becomes visible again (if it was hidden)
+    Returns:
+        None on success
     
-    **Returns:**
-    - 204: Review unflagged successfully
-    - 403: Unauthorized (not admin/moderator)
-    - 404: Review not found
+    Raises:
+        HTTPException: 403 if unauthorized, 404 if review not found
     """
     check_admin_moderator_role(user_id_role)
     review = db.query(Review).filter(Review.id == review_id).first()
@@ -362,92 +475,3 @@ async def unflag_review(
     
  
     return None
-
-
-@router.get("/flagged", response_model=ReviewListResponse, status_code=200)
-async def get_flagged_reviews(
-    db: Session = Depends(get_db),
-        user_id_role: dict[str,str] = Depends(get_current_user),
-):
-    
-    # Get all flagged reviews
-    check_admin_moderator_role(user_id_role)
-    user_id=user_id_role['user_id']
-
-    cached_reviews= await cache.get(f"all_flagged_reviews:{user_id}")
-    if cached_reviews:
-        reviews = cached_reviews
-    else:
-        reviews = db.query(Review).options(
-            joinedload(Review.room),
-            joinedload(Review.user)
-        ).filter(Review.is_flagged == True).all()
-        await  cache.set(f"all_flagged_reviews:{user_id}", reviews)
-    review_responses = [
-        ReviewResponse(
-            id=review.id,
-            room_id=review.room_id,
-            room_name=review.room.name,
-            user_id=review.user_id,
-            username=review.user.username,
-            rating=review.rating,
-            comment=review.comment,
-            is_flagged=review.is_flagged,
-            flagged_reason=review.flagged_reason,
-            created_at=review.created_at,
-            updated_at=review.updated_at
-        )
-        for review in reviews
-    ]
-    
-    return ReviewListResponse(
-        reviews=review_responses,
-        total=len(reviews),
-        average_rating=None
-    )
-
-
-
-@router.get("/", response_model=ReviewListResponse, status_code=200)
-async def get_all_reviews(
-    db: Session = Depends(get_db),
-        user_id_role: dict[str,str] = Depends(get_current_user),
-):
-    
-    # Get all reviews
-    check_admin_moderator_role(user_id_role)
-    
-    user_id=user_id_role['user_id']
-    
-    cached_reviews= await cache.get(f"all_reviews:{user_id}")
-    if cached_reviews:
-        reviews = cached_reviews
-    else:
-        reviews = db.query(Review).options(
-        joinedload(Review.room),
-            joinedload(Review.user)
-        ).all()
-        await cache.set(f"all_reviews:{user_id}",reviews,ttl=60)
-    
-    review_responses = [
-        ReviewResponse(
-            id=review.id,
-            room_id=review.room_id,
-            room_name=review.room.name,
-            user_id=review.user_id,
-            username=review.user.username,
-            rating=review.rating,
-            comment=review.comment,
-            is_flagged=review.is_flagged,
-            flagged_reason=review.flagged_reason,
-            created_at=review.created_at,
-            updated_at=review.updated_at
-        )
-        for review in reviews
-    ]
-    
-    return ReviewListResponse(
-        reviews=review_responses,
-        total=len(reviews),
-        average_rating=None
-    )

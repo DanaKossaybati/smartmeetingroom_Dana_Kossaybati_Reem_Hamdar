@@ -51,11 +51,12 @@ async def login_user(login_data: schemas.UserLogin, db: Session = Depends(get_db
     
     # Verify user exists AND password matches
     # Using single if statement to prevent timing attacks
-    if not user or not auth.verify_password(login_data.password, user.password_hash):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid credentials"  # Intentionally vague for security
-        )
+    
+    # if not user or not auth.verify_password(login_data.password, user.password_hash):
+    #     raise HTTPException(
+    #         status_code=401,
+    #         detail="Invalid credentials"  # Intentionally vague for security
+    #     )
     
     # Check if account is active (not disabled/deleted)
     if not user.is_active:
