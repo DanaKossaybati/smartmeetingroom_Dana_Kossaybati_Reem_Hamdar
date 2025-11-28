@@ -20,29 +20,57 @@ router = APIRouter(tags=["users"])
 @router.post("/login", response_model=schemas.Token)
 async def login_user(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
     """
-    Authenticate user and return JWT access token.
+    Authenticate user and issue JWT access token.
     
-    This endpoint handles user authentication:
-    - Looks up user by username
-    - Verifies password using bcrypt (constant-time comparison)
-    - Checks if account is active
-    - Updates last_login timestamp
-    - Generates JWT token with user info
+    Authenticates a user with username and password, returning a JWT token for
+    subsequent API requests:
+    - Looks up user by username in database
+    - Verifies password using bcrypt (constant-time comparison to prevent timing attacks)
+    - Checks that account is active (not disabled/deleted)
+    - Updates last_login timestamp for security auditing
+    - Generates JWT token with 24-hour expiration
     
     Args:
-        login_data: UserLogin schema with username and password
-        db: Database session
+        login_data (schemas.UserLogin): Login credentials with fields:
+            - username (str): The registered username
+            - password (str): Plain text password (never stored)
+        db (Session): SQLAlchemy database session (FastAPI dependency injection)
     
     Returns:
-        Token schema with access_token, user_id, username, and role
+        schemas.Token: Authentication response with fields:
+            - access_token (str): JWT token for Authorization header
+            - token_type (str): Always "bearer"
+            - user_id (int): User's ID
+            - username (str): Username
+            - role (str): User's role for authorization
+            - expires_in (int): Token expiration time in seconds (86400 = 24 hours)
     
     Raises:
-        HTTPException 401: If credentials are invalid
-        HTTPException 403: If account is inactive
+        HTTPException(401): Invalid username or password (intentionally vague for security)
+        HTTPException(403): Account is inactive/disabled
     
-    Security Note:
-        Returns same error message for invalid username/password
-        to prevent username enumeration attacks.
+    Security Notes:
+        - Returns identical "Invalid credentials" error for both wrong username
+          and wrong password to prevent username enumeration attacks
+        - Uses bcrypt constant-time password comparison to prevent timing attacks
+        - Updates last_login timestamp for activity tracking
+    
+    Example:
+        POST /api/users/login
+        {
+            "username": "john_doe",
+            "password": "SecurePass123!"
+        }
+        
+        Response (201):
+        {
+            "access_token": "eyJhbGc...",
+            "token_type": "bearer",
+            "user_id": 1,
+            "username": "john_doe",
+            "role": "regular_user",
+            "expires_in": 86400
+        }
     """
     # Look up user by username
     user = db.query(models.User).filter(

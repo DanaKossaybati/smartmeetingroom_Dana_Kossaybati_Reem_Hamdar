@@ -24,12 +24,54 @@ async def get_user_profile(
     db: Session = Depends(get_db)
 ):
     """
-    Get user profile by username.
+    Retrieve user profile by username.
     
-    Authorization rules:
-    - Users can view their own profile
-    - Admins can view any profile
-    - Regular users cannot view other users' profiles
+    Gets detailed user profile information. Authorization is enforced:
+    users can only view their own profile unless they are administrators.
+    
+    Args:
+        username (str): Path parameter - the username of profile to retrieve
+        current_user (dict): Current authenticated user from JWT token (FastAPI dependency)
+            Contains: user_id, username, role
+        db (Session): SQLAlchemy database session (FastAPI dependency injection)
+    
+    Returns:
+        schemas.UserResponse: User profile object with fields:
+            - user_id (int): Unique user identifier
+            - username (str): The requested user's username
+            - email (str): User's email address
+            - full_name (str): User's display name
+            - role (str): User's role (admin, regular_user, etc.)
+            - is_active (bool): Whether account is active
+            - created_at (datetime): Account creation timestamp
+            - updated_at (datetime): Last profile update
+            - last_login (datetime): Last login timestamp
+    
+    Raises:
+        HTTPException(403): User lacks permission to view this profile
+        HTTPException(404): User with username not found
+    
+    Authorization Rules:
+        - Users can view their own profile
+        - Admins can view any user's profile
+        - Regular users cannot view other users' profiles
+    
+    Example:
+        GET /api/users/john_doe
+        Authorization: Bearer <token>
+        
+        Response (200):
+        {
+            "user_id": 1,
+            "username": "john_doe",
+            "email": "john@example.com",
+            "full_name": "John Doe",
+            "role": "regular_user",
+            "is_active": true,
+            "created_at": "2024-01-15T10:30:00",
+            "updated_at": "2024-01-20T15:45:00",
+            "last_login": "2024-01-28T09:15:00"
+        }
     """
     # Authorization check: can only view own profile (unless admin)
     if current_user["username"] != username and current_user["role"] != "admin":
@@ -56,8 +98,44 @@ async def update_user_profile(
     """
     Update user profile information.
     
-    Allows updating email and full_name.
-    Password changes should use a separate endpoint (not implemented).
+    Allows users to update their own profile (email, full_name).
+    Admins can update any user's profile. Password changes are not
+    supported via this endpoint (separate endpoint would be needed).
+    
+    Args:
+        username (str): Path parameter - username of profile to update
+        user_update (schemas.UserUpdate): Update data with optional fields:
+            - email (str, optional): New email address
+            - full_name (str, optional): New display name
+        current_user (dict): Current authenticated user from JWT token (FastAPI dependency)
+            Contains: user_id, username, role
+        db (Session): SQLAlchemy database session (FastAPI dependency injection)
+    
+    Returns:
+        schemas.UserResponse: Updated user profile object
+    
+    Raises:
+        HTTPException(403): User lacks permission to update this profile
+        HTTPException(404): User with username not found
+        HTTPException(409): Email already in use by another user
+    
+    Validation Rules:
+        - Email must be unique (checked against other users)
+        - Email must be valid format (validated by Pydantic)
+        - Cannot update username via this endpoint (separate endpoint needed)
+        - Cannot update password via this endpoint
+    
+    Authorization Rules:
+        - Users can update their own profile
+        - Admins can update any user's profile
+    
+    Example:
+        PUT /api/users/john_doe
+        Authorization: Bearer <token>
+        {
+            "email": "newemail@example.com",
+            "full_name": "John Smith"
+        }
     """
     # Authorization check
     if current_user["username"] != username and current_user["role"] != "admin":
@@ -102,8 +180,43 @@ async def delete_user_account(
     """
     Delete user account (hard delete).
     
-    Alternative approach: Soft delete by setting is_active=False
-    This implementation performs hard delete for demonstration.
+    Permanently removes a user account from the system. This is a destructive
+    operation that cannot be undone. Soft delete approach (setting is_active=False)
+    would be safer for production systems.
+    
+    Args:
+        username (str): Path parameter - username of account to delete
+        current_user (dict): Current authenticated user from JWT token (FastAPI dependency)
+            Contains: user_id, username, role
+        db (Session): SQLAlchemy database session (FastAPI dependency injection)
+    
+    Returns:
+        dict: Confirmation message with fields:
+            - message (str): "User deleted successfully"
+    
+    Raises:
+        HTTPException(403): User lacks permission to delete this account
+        HTTPException(404): User with username not found
+    
+    Authorization Rules:
+        - Users can delete their own account
+        - Admins can delete any user's account
+    
+    Production Recommendation:
+        Consider implementing soft delete instead:
+        1. Set is_active=False instead of deleting
+        2. Preserves foreign key relationships
+        3. Allows account reactivation
+        4. Maintains audit trail
+    
+    Example:
+        DELETE /api/users/john_doe
+        Authorization: Bearer <token>
+        
+        Response (200):
+        {
+            "message": "User deleted successfully"
+        }
     """
     # Authorization check
     if current_user["username"] != username and current_user["role"] != "admin":

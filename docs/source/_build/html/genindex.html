@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; Smart Meeting Room - Services API 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Smart Meeting Room - Services API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="users/index.html">Users Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#service-details">Service Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/main.html">Main Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/models.html">Database Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/schemas.html">Request/Response Schemas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/services.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/auth.html">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/routes.html">API Routes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/database.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/errors.html">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#database-models">Database Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#module-users.schemas">Request/Response Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.schemas.UserCreate"><code class="docutils literal notranslate"><span class="pre">UserCreate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.schemas.UserLogin"><code class="docutils literal notranslate"><span class="pre">UserLogin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.schemas.UserResponse"><code class="docutils literal notranslate"><span class="pre">UserResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.schemas.UserUpdate"><code class="docutils literal notranslate"><span class="pre">UserUpdate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.schemas.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#core-services">Core Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#module-users.auth">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.auth.hash_password"><code class="docutils literal notranslate"><span class="pre">hash_password()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.auth.verify_password"><code class="docutils literal notranslate"><span class="pre">verify_password()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.auth.create_access_token"><code class="docutils literal notranslate"><span class="pre">create_access_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.auth.get_current_user"><code class="docutils literal notranslate"><span class="pre">get_current_user()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.auth.require_admin"><code class="docutils literal notranslate"><span class="pre">require_admin()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#module-users.database">Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.database.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#module-users.errors">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.errors.UserNotFoundException"><code class="docutils literal notranslate"><span class="pre">UserNotFoundException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.errors.DuplicateUserException"><code class="docutils literal notranslate"><span class="pre">DuplicateUserException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.errors.UnauthorizedException"><code class="docutils literal notranslate"><span class="pre">UnauthorizedException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.errors.database_exception_handler"><code class="docutils literal notranslate"><span class="pre">database_exception_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.errors.validation_exception_handler"><code class="docutils literal notranslate"><span class="pre">validation_exception_handler()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#module-users.utils">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.utils.sanitize_input"><code class="docutils literal notranslate"><span class="pre">sanitize_input()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.utils.validate_password_strength"><code class="docutils literal notranslate"><span class="pre">validate_password_strength()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#users.utils.validate_username"><code class="docutils literal notranslate"><span class="pre">validate_username()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="users/index.html#api-routes">API Routes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="users/index.html#api-endpoints">API Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bookings/index.html">Bookings Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#service-details">Service Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bookings/main.html">Main Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/models.html">Database Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/schemas.html">Request/Response Schemas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/services.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/routes.html">API Routes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/database.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/analytics.html">Analytics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#database-models">Database Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#module-bookings.schemas">Request/Response Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.BookingCreate"><code class="docutils literal notranslate"><span class="pre">BookingCreate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.BookingUpdate"><code class="docutils literal notranslate"><span class="pre">BookingUpdate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.BookingResponse"><code class="docutils literal notranslate"><span class="pre">BookingResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.AvailabilityCheck"><code class="docutils literal notranslate"><span class="pre">AvailabilityCheck</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.AvailabilityResponse"><code class="docutils literal notranslate"><span class="pre">AvailabilityResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.schemas.BookingHistoryResponse"><code class="docutils literal notranslate"><span class="pre">BookingHistoryResponse</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#core-services">Core Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#module-bookings.database">Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#bookings.database.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#analytics">Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bookings/index.html#api-routes">API Routes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bookings/index.html#api-endpoints">API Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Smart Meeting Room - Services API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/errors.html#users.errors.DuplicateUserException.__init__">__init__() (users.errors.DuplicateUserException method)</a>, <a href="users/index.html#users.errors.DuplicateUserException.__init__">[1]</a>
+
+      <ul>
+        <li><a href="users/errors.html#users.errors.UnauthorizedException.__init__">(users.errors.UnauthorizedException method)</a>, <a href="users/index.html#users.errors.UnauthorizedException.__init__">[1]</a>
+</li>
+        <li><a href="users/errors.html#users.errors.UserNotFoundException.__init__">(users.errors.UserNotFoundException method)</a>, <a href="users/index.html#users.errors.UserNotFoundException.__init__">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.Token.access_token">access_token (users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.access_token">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.action">action (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.action">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck">AvailabilityCheck (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse">AvailabilityResponse (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.available">available (bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.available">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingCreate.booking_date">booking_date (bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.booking_date">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.booking_date">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.booking_date">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.booking_id">booking_id (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.booking_id">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.booking_id">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.booking_id">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingCreate">BookingCreate (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse">BookingHistoryResponse (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.Config">BookingHistoryResponse.Config (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.Config">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse">BookingResponse (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.Config">BookingResponse.Config (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.Config">[1]</a>
+</li>
+      <li>
+    bookings.database
+
+      <ul>
+        <li><a href="bookings/database.html#module-bookings.database">module</a>, <a href="bookings/index.html#module-bookings.database">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    bookings.schemas
+
+      <ul>
+        <li><a href="bookings/index.html#module-bookings.schemas">module</a>, <a href="bookings/schemas.html#module-bookings.schemas">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingUpdate">BookingUpdate (class in bookings.schemas)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingUpdate">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.cancelled_at">cancelled_at (bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.cancelled_at">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.changed_by">changed_by (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.changed_by">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/auth.html#users.auth.create_access_token">create_access_token() (in module users.auth)</a>, <a href="users/index.html#users.auth.create_access_token">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.created_at">created_at (bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.created_at">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserResponse.created_at">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.created_at">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/errors.html#users.errors.database_exception_handler">database_exception_handler() (in module users.errors)</a>, <a href="users/index.html#users.errors.database_exception_handler">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck.date">date (bookings.schemas.AvailabilityCheck attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck.date">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.date">(bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.date">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/errors.html#users.errors.DuplicateUserException">DuplicateUserException</a>, <a href="users/index.html#users.errors.DuplicateUserException">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserCreate.email">email (users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.email">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserResponse.email">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.email">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserUpdate.email">(users.schemas.UserUpdate attribute)</a>, <a href="users/schemas.html#users.schemas.UserUpdate.email">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck.end_time">end_time (bookings.schemas.AvailabilityCheck attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck.end_time">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.end_time">(bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.end_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingCreate.end_time">(bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.end_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.end_time">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.end_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingUpdate.end_time">(bookings.schemas.BookingUpdate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingUpdate.end_time">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.Config.from_attributes">from_attributes (bookings.schemas.BookingHistoryResponse.Config attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.Config.from_attributes">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.Config.from_attributes">(bookings.schemas.BookingResponse.Config attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.Config.from_attributes">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserResponse.Config.from_attributes">(users.schemas.UserResponse.Config attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.Config.from_attributes">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserCreate.full_name">full_name (users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.full_name">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserResponse.full_name">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.full_name">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserUpdate.full_name">(users.schemas.UserUpdate attribute)</a>, <a href="users/schemas.html#users.schemas.UserUpdate.full_name">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/auth.html#users.auth.get_current_user">get_current_user() (in module users.auth)</a>, <a href="users/index.html#users.auth.get_current_user">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/database.html#bookings.database.get_db">get_db() (in module bookings.database)</a>, <a href="bookings/index.html#bookings.database.get_db">[1]</a>
+
+      <ul>
+        <li><a href="users/database.html#users.database.get_db">(in module users.database)</a>, <a href="users/index.html#users.database.get_db">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/auth.html#users.auth.hash_password">hash_password() (in module users.auth)</a>, <a href="users/index.html#users.auth.hash_password">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.history_id">history_id (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.history_id">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserResponse.is_active">is_active (users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.is_active">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserResponse.last_login">last_login (users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.last_login">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.message">message (bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.message">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck.model_config">model_config (bookings.schemas.AvailabilityCheck attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck.model_config">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.model_config">(bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.model_config">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingCreate.model_config">(bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.model_config">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.model_config">(bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.model_config">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.model_config">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.model_config">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingUpdate.model_config">(bookings.schemas.BookingUpdate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingUpdate.model_config">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.Token.model_config">(users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.model_config">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserCreate.model_config">(users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.model_config">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserLogin.model_config">(users.schemas.UserLogin attribute)</a>, <a href="users/schemas.html#users.schemas.UserLogin.model_config">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserResponse.model_config">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.model_config">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserUpdate.model_config">(users.schemas.UserUpdate attribute)</a>, <a href="users/schemas.html#users.schemas.UserUpdate.model_config">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    module
+
+      <ul>
+        <li><a href="bookings/database.html#module-bookings.database">bookings.database</a>, <a href="bookings/index.html#module-bookings.database">[1]</a>
+</li>
+        <li><a href="bookings/index.html#module-bookings.schemas">bookings.schemas</a>, <a href="bookings/schemas.html#module-bookings.schemas">[1]</a>
+</li>
+        <li><a href="users/auth.html#module-users.auth">users.auth</a>, <a href="users/index.html#module-users.auth">[1]</a>
+</li>
+        <li><a href="users/database.html#module-users.database">users.database</a>, <a href="users/index.html#module-users.database">[1]</a>
+</li>
+        <li><a href="users/errors.html#module-users.errors">users.errors</a>, <a href="users/index.html#module-users.errors">[1]</a>
+</li>
+        <li><a href="users/index.html#module-users.schemas">users.schemas</a>, <a href="users/schemas.html#module-users.schemas">[1]</a>
+</li>
+        <li><a href="users/index.html#module-users.utils">users.utils</a>, <a href="users/utils.html#module-users.utils">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.new_end_time">new_end_time (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.new_end_time">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.new_start_time">new_start_time (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.new_start_time">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserCreate.password">password (users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.password">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserLogin.password">(users.schemas.UserLogin attribute)</a>, <a href="users/schemas.html#users.schemas.UserLogin.password">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.previous_end_time">previous_end_time (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.previous_end_time">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.previous_start_time">previous_start_time (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.previous_start_time">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingCreate.purpose">purpose (bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.purpose">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.purpose">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.purpose">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingUpdate.purpose">(bookings.schemas.BookingUpdate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingUpdate.purpose">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/auth.html#users.auth.require_admin">require_admin() (in module users.auth)</a>, <a href="users/index.html#users.auth.require_admin">[1]</a>
+</li>
+      <li><a href="users/index.html#users.schemas.Token.role">role (users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.role">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserCreate.role">(users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.role">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserResponse.role">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.role">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck.room_id">room_id (bookings.schemas.AvailabilityCheck attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck.room_id">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.room_id">(bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.room_id">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingCreate.room_id">(bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.room_id">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.room_id">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.room_id">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.utils.sanitize_input">sanitize_input() (in module users.utils)</a>, <a href="users/utils.html#users.utils.sanitize_input">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.AvailabilityCheck.start_time">start_time (bookings.schemas.AvailabilityCheck attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityCheck.start_time">[1]</a>
+
+      <ul>
+        <li><a href="bookings/index.html#bookings.schemas.AvailabilityResponse.start_time">(bookings.schemas.AvailabilityResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.AvailabilityResponse.start_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingCreate.start_time">(bookings.schemas.BookingCreate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.start_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingResponse.start_time">(bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.start_time">[1]</a>
+</li>
+        <li><a href="bookings/index.html#bookings.schemas.BookingUpdate.start_time">(bookings.schemas.BookingUpdate attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingUpdate.start_time">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.status">status (bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.status">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="bookings/index.html#bookings.schemas.BookingHistoryResponse.timestamp">timestamp (bookings.schemas.BookingHistoryResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingHistoryResponse.timestamp">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.Token">Token (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.Token">[1]</a>
+</li>
+      <li><a href="users/index.html#users.schemas.Token.token_type">token_type (users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.token_type">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/errors.html#users.errors.UnauthorizedException">UnauthorizedException</a>, <a href="users/index.html#users.errors.UnauthorizedException">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.updated_at">updated_at (bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.updated_at">[1]</a>
+</li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingResponse.user_id">user_id (bookings.schemas.BookingResponse attribute)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingResponse.user_id">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.Token.user_id">(users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.user_id">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserResponse.user_id">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.user_id">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="users/index.html#users.schemas.UserCreate">UserCreate (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.UserCreate">[1]</a>
+</li>
+      <li><a href="users/index.html#users.schemas.UserLogin">UserLogin (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.UserLogin">[1]</a>
+</li>
+      <li><a href="users/index.html#users.schemas.Token.username">username (users.schemas.Token attribute)</a>, <a href="users/schemas.html#users.schemas.Token.username">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserCreate.username">(users.schemas.UserCreate attribute)</a>, <a href="users/schemas.html#users.schemas.UserCreate.username">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserLogin.username">(users.schemas.UserLogin attribute)</a>, <a href="users/schemas.html#users.schemas.UserLogin.username">[1]</a>
+</li>
+        <li><a href="users/index.html#users.schemas.UserResponse.username">(users.schemas.UserResponse attribute)</a>, <a href="users/schemas.html#users.schemas.UserResponse.username">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="users/errors.html#users.errors.UserNotFoundException">UserNotFoundException</a>, <a href="users/index.html#users.errors.UserNotFoundException">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.schemas.UserResponse">UserResponse (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.UserResponse">[1]</a>
+</li>
+      <li><a href="users/index.html#users.schemas.UserResponse.Config">UserResponse.Config (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.UserResponse.Config">[1]</a>
+</li>
+      <li>
+    users.auth
+
+      <ul>
+        <li><a href="users/auth.html#module-users.auth">module</a>, <a href="users/index.html#module-users.auth">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    users.database
+
+      <ul>
+        <li><a href="users/database.html#module-users.database">module</a>, <a href="users/index.html#module-users.database">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    users.errors
+
+      <ul>
+        <li><a href="users/errors.html#module-users.errors">module</a>, <a href="users/index.html#module-users.errors">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    users.schemas
+
+      <ul>
+        <li><a href="users/index.html#module-users.schemas">module</a>, <a href="users/schemas.html#module-users.schemas">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    users.utils
+
+      <ul>
+        <li><a href="users/index.html#module-users.utils">module</a>, <a href="users/utils.html#module-users.utils">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="users/index.html#users.schemas.UserUpdate">UserUpdate (class in users.schemas)</a>, <a href="users/schemas.html#users.schemas.UserUpdate">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.utils.validate_password_strength">validate_password_strength() (in module users.utils)</a>, <a href="users/utils.html#users.utils.validate_password_strength">[1]</a>
+
+      <ul>
+        <li><a href="users/index.html#users.schemas.UserCreate.validate_password_strength">(users.schemas.UserCreate class method)</a>, <a href="users/schemas.html#users.schemas.UserCreate.validate_password_strength">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="bookings/index.html#bookings.schemas.BookingCreate.validate_time_order">validate_time_order() (bookings.schemas.BookingCreate class method)</a>, <a href="bookings/schemas.html#bookings.schemas.BookingCreate.validate_time_order">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="users/index.html#users.utils.validate_username">validate_username() (in module users.utils)</a>, <a href="users/utils.html#users.utils.validate_username">[1]</a>
+</li>
+      <li><a href="users/errors.html#users.errors.validation_exception_handler">validation_exception_handler() (in module users.errors)</a>, <a href="users/index.html#users.errors.validation_exception_handler">[1]</a>
+</li>
+      <li><a href="users/auth.html#users.auth.verify_password">verify_password() (in module users.auth)</a>, <a href="users/index.html#users.auth.verify_password">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Dana Kossaybati &amp; Reem Hamdar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
