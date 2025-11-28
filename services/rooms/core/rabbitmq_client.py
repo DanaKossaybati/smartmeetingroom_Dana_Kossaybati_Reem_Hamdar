@@ -1,3 +1,16 @@
+"""
+Thread-safe RabbitMQ client for event-driven microservices.
+Handles connection management, event publishing, and message consumption.
+
+Features:
+- Separate producer and consumer connections for stability
+- Thread-safe publishing with locks
+- Automatic reconnection on connection loss
+- Topic-based routing for flexible event handling
+- Delivery confirmation for reliability
+
+Author: Reem Hamdar
+"""
 import pika
 import json
 import logging
@@ -7,9 +20,35 @@ import threading
 logger = logging.getLogger(__name__)
 
 class RabbitMQClient:
-    """Thread-safe RabbitMQ client with separate producer and consumer connections"""
+    """
+    Thread-safe RabbitMQ client with separate producer and consumer connections.
+    
+    This client maintains two separate connections:
+    1. Producer connection: For publishing events (thread-safe)
+    2. Consumer connection: For consuming events (separate thread)
+    
+    Attributes:
+        service_name: Name of the service using this client
+        producer_connection: AMQP connection for publishing
+        producer_channel: AMQP channel for publishing
+        consumer_connection: AMQP connection for consuming
+        consumer_channel: AMQP channel for consuming
+        _connected: Connection status flag
+        _lock: Threading lock for thread-safe publishing
+    
+    Usage:
+        client = RabbitMQClient("my-service")
+        client.connect()
+        client.publish_event("user.created", {"user_id": 123})
+    """
 
     def __init__(self, service_name: str):
+        """
+        Initialize RabbitMQ client.
+        
+        Args:
+            service_name: Identifier for this service in logs and events
+        """
         self.service_name = service_name
         self.producer_connection = None
         self.producer_channel = None
@@ -19,7 +58,20 @@ class RabbitMQClient:
         self._lock = threading.Lock()  # Thread safety for producer
 
     def _get_connection_params(self):
-        """Get connection parameters"""
+        """
+        Get RabbitMQ connection parameters.
+        
+        Returns:
+            ConnectionParameters with host, credentials, and timeouts
+        
+        Configuration:
+            - Host: rabbitmq (Docker container name)
+            - Port: 5672 (AMQP default)
+            - VHost: /dev
+            - Credentials: admin/admin123
+            - Heartbeat: 600 seconds (10 minutes)
+            - Connection attempts: 5 retries
+        """
         return pika.ConnectionParameters(
             host='rabbitmq',
             port=5672,
@@ -32,7 +84,19 @@ class RabbitMQClient:
         )
 
     def connect(self) -> bool:
-        """Connect producer - call this once on startup"""
+        """
+        Connect producer to RabbitMQ - call this once on startup.
+        
+        Establishes connection, creates channel, enables delivery confirmation,
+        and declares the domain_events exchange.
+        
+        Returns:
+            True if connection successful, False otherwise
+        
+        Raises:
+            ProbableAuthenticationError: If credentials are invalid
+            AMQPConnectionError: If connection fails
+        """
         try:
             logger.info(f"[{self.service_name}] Connecting producer to RabbitMQ...")
 
@@ -61,7 +125,12 @@ class RabbitMQClient:
             return False
 
     def is_connected(self) -> bool:
-        """Check if producer connection is active"""
+        """
+        Check if producer connection is active.
+        
+        Returns:
+            True if connected and channel is open, False otherwise
+        """
         return (self._connected and
                 self.producer_connection and
                 not self.producer_connection.is_closed and
@@ -70,8 +139,31 @@ class RabbitMQClient:
 
     def publish_event(self, event_name: str, payload: dict):
         """
-        Thread-safe event publishing
-        Example: publish_event("user.created", {"user_id": 123})
+        Thread-safe event publishing with delivery confirmation.
+        
+        Publishes a domain event to the topic exchange with automatic
+        routing based on event name.
+        
+        Args:
+            event_name: Event type (routing key), e.g., "user.created"
+            payload: Event data as dictionary
+        
+        Returns:
+            True if published successfully, False otherwise
+        
+        Example:
+            client.publish_event("room.created", {
+                "room_id": 123,
+                "room_name": "Conference Room A"
+            })
+        
+        Message format:
+            {
+                "event_type": "room.created",
+                "payload": {...},
+                "timestamp": "2024-01-01T12:00:00Z",
+                "service": "rooms-service"
+            }
         """
         if not self.is_connected():
             logger.warning(f"[{self.service_name}] ⚠️ Cannot publish {event_name}: Not connected")
@@ -92,7 +184,7 @@ class RabbitMQClient:
                     routing_key=event_name,
                     body=json.dumps(message),
                     properties=pika.BasicProperties(
-                        delivery_mode=2,
+                        delivery_mode=2,  # Persistent messages
                         content_type='application/json',
                         timestamp=int(datetime.now(timezone.utc).timestamp())
                     )

@@ -1,3 +1,16 @@
+"""
+Thread-safe RabbitMQ client for event-driven microservices.
+Handles connection management, event publishing, and message consumption.
+
+Features:
+- Separate producer and consumer connections for stability
+- Thread-safe publishing with locks
+- Automatic reconnection on connection loss
+- Topic-based routing for flexible event handling
+- Delivery confirmation for reliability
+
+Author: Reem Hamdar
+"""
 import pika
 import json
 import logging
