@@ -1,9 +1,18 @@
+"""
+API route handlers for Rooms Service.
+Handles room management operations including CRUD operations,
+filtering, and availability checks.
+
+Routes are kept thin - they only handle HTTP concerns.
+Business logic and data access are delegated to appropriate layers.
+
+Author: Reem Hamdar
+"""
 from typing import Optional
 
 from aiocache.serializers import JsonSerializer
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-# Use the local module `database` (same folder) instead of `rooms.database`
 from database import get_db
 from auth import get_current_user
 from enums import UserRole
@@ -36,7 +45,7 @@ async def create_room(request:RoomCreateRequest, db:Session=Depends(get_db), use
     return {}
     
 @router.put("/update{room_id}",status_code=204)
-async def update_room(room_id:str, request:RoomUpdateRequest,
+async def update_room(room_id:int, request:RoomUpdateRequest,
                       db:Session=Depends(get_db), user_id_role:dict[str,str]=Depends(get_current_user)):
     check_admin_manager_role(user_id_role)
     
@@ -75,7 +84,7 @@ async def delete_room(name:str, db:Session=Depends(get_db), user_id_role:dict[st
                          .filter(Room.name==name).first())
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
-    room.bookings.clear()
+    # bookings relationship removed - managed by bookings_service
     room.room_equipment.clear()
     db.delete(room)
     db.commit()
@@ -117,7 +126,8 @@ async def get_available_rooms(
             "room_equipment": [{"equipment_name": re.equipment.name} for re in room.room_equipment]
         } for room in rooms]
         await cache.set(f"rooms:{user_id}", rooms_serialized, ttl=300)
-
+    if not rooms_serialized:
+        return RoomResponseList(rooms=[])
     response = [
         RoomResponse(
             name=room["name"],

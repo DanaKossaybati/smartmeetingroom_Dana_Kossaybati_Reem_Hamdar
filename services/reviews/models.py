@@ -1,4 +1,9 @@
-import uuid
+"""
+Database models for Reviews Service.
+Defines SQLAlchemy ORM models for reviews, rooms, and users.
+
+Author: Reem Hamdar
+"""
 from datetime import datetime, timezone
 
 from sqlalchemy.orm import relationship
@@ -6,11 +11,32 @@ from database import Base
 from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, DateTime, func
 
 class Review(Base):
-    __tablename__ = "reviews"
+    """
+    Review model representing user feedback for meeting rooms.
+    
+    Attributes:
+        id: Primary key, auto-incrementing integer
+        room_id: Foreign key to rooms table
+        user_id: Foreign key to users table
+        rating: Star rating 1-5 (required)
+        comment: Review text content
+        is_flagged: Moderation flag for inappropriate content
+        flagged_reason: Explanation if review is flagged
+        created_at: Timestamp when review was created
+        updated_at: Timestamp of last modification
+        room: Relationship to Room model
+        user: Relationship to User model
+    
+    Business Rules:
+        - Users can only review each room once
+        - Rating must be between 1 and 5 stars
+        - Flagged reviews may be hidden from public view
+    """
+    _tablename_ = "reviews"
 
-    id = Column(String, primary_key=True, index=True)
-    room_id = Column(String, ForeignKey("rooms.id"))
-    user_id = Column(String, ForeignKey("users.id"))
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"))
+    user_id = Column(Integer, ForeignKey("users.id"))
     rating = Column(Integer,nullable=False)
     comment = Column(String)
     is_flagged = Column(Boolean, default=False)
@@ -20,10 +46,19 @@ class Review(Base):
 
    
     room = relationship("Room", back_populates="reviews")
+    user = relationship("User",back_populates="user_reviews")
 
-    def __init__(self, room_id: str, user_id: str, rating: int, comment: str):
-        super().__init__()
-        self.id = str(uuid.uuid4())
+    def _init_(self, room_id: int, user_id: int, rating: int, comment: str):
+        """
+        Initialize a new Review.
+        
+        Args:
+            room_id: ID of the room being reviewed
+            user_id: ID of the user creating the review
+            rating: Star rating (1-5)
+            comment: Review text
+        """
+        super()._init_()
         self.room_id = room_id
         self.user_id = user_id
         self.rating = rating
@@ -32,56 +67,47 @@ class Review(Base):
         self.created_at = datetime.now(timezone.utc)
         self.updated_at = datetime.now(timezone.utc)
 
-class Room(Base):    
-    __tablename__ = "rooms"
+class Room(Base):
+    """
+    Room model (simplified version for reviews service).
+    
+    This is a read-only reference model for room information.
+    The authoritative room data lives in the rooms service.
+    
+    Attributes:
+        id: Primary key
+        name: Room name
+        capacity: Maximum occupancy
+        location: Physical location
+        is_available: Current availability status
+        reviews: Relationship to Review model
+    """
+    _tablename_ = "rooms"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String,nullable=False)
     capacity = Column(Integer,nullable=False)
     location = Column(String)
     is_available = Column(Boolean,default=True)
 
-
-    bookings = relationship("Booking", back_populates="room",cascade="all, delete-orphan")
-    room_equipment = relationship("RoomEquipment", back_populates="room",cascade="all, delete-orphan")
+    # Only include relationships to models that exist in this service
     reviews = relationship("Review", back_populates="room")
 
-    def __init__(self,name,capacity,location,is_available=True):
-        super().__init__()
-        self.id=str(uuid.uuid4())
+    def _init_(self,name,capacity,location,is_available=True):
+        """
+        Initialize a Room reference.
+        
+        Args:
+            name: Room name
+            capacity: Maximum capacity
+            location: Physical location
+            is_available: Availability status
+        """
+        super()._init_()
         self.name = name
         self.capacity = capacity
         self.location = location
         self.is_available = is_available
-    
-class Equipment(Base):    
-    __tablename__ = "equipments"
-    id = Column(String, primary_key=True, index=True)
-    name = Column(String,nullable=False)
-
-    room_equip=relationship("RoomEquipment", back_populates="equipment",cascade="all, delete-orphan")
-
-    def __init__(self, name:str):
-        super().__init__()
-        self.id=str(uuid.uuid4())
-        self.name = name
-
-class RoomEquipment(Base):    
-    __tablename__ = "room_equipments"
-   
-    room_id = Column(String, ForeignKey("rooms.id") ,primary_key=True)
-    equipment_id = Column(String, ForeignKey("equipments.id"),primary_key=True)
-    quantity = Column(Integer,default=1)
-
-
-    room = relationship("Room", back_populates="room_equipment")
-    equipment = relationship("Equipment", back_populates="room_equip")
-    
-    def __init__(self, room_id:str,equipment_id:str,quantity:int=1):
-        super().__init__()
-        self.room_id = room_id
-        self.equipment_id = equipment_id
-        self.quantity = quantity
 
 
 class User(Base):
@@ -103,7 +129,7 @@ class User(Base):
         updated_at: Last profile modification (auto-updated on changes)
         last_login: Tracks user activity for security auditing
     """
-    __tablename__ = "users"
+    _tablename_ = "users"
     
     # Primary key - auto-incremented integer
     user_id = Column(Integer, primary_key=True, index=True)
@@ -160,9 +186,7 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True              # Null until first login
     )
-    
-    def __repr__(self):
+    user_reviews=relationship("Review",back_populates="user")
+    def _repr_(self):
         """String representation for debugging."""
         return f"<User(username='{self.username}', role='{self.role}')>"
-    
-    

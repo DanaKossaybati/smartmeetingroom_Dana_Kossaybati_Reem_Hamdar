@@ -12,8 +12,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - postgres_data:/var/lib/postgresql/data
+    - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed_data.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -23,30 +24,30 @@ services:
       - meetingroom_network
 
   # Users Service (Dana)
-  # users_service:
-  #   build:
-  #     context: ./services/users
-  #     dockerfile: Dockerfile
-  #   container_name: users_service
-  #   environment:
-  #     DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
-  #     SECRET_KEY: your-secret-key-change-in-production
-  #     JWT_ALGORITHM: HS256
-  #     ACCESS_TOKEN_EXPIRE_MINUTES: 30
-  #   ports:
-  #     - "8001:8001"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 40s
-  #   networks:
-  #     - meetingroom_network
-  #   restart: unless-stopped
+  users_service:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    container_name: users_service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
+      SECRET_KEY: your-secret-key-change-in-production
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 3000
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
 
   # # Bookings Service (Dana)
   # bookings_service:
@@ -85,6 +86,8 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
       SECRET_KEY: your-secret-key-change-in-production
+      USERS_SERVICE_URL: http://users_service:8001
+      ROOMS_SERVICE_URL: http://rooms_service:8002
     ports:
       - "8002:8002"
     depends_on:
@@ -109,6 +112,8 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
       SECRET_KEY: your-secret-key-change-in-production
+      USERS_SERVICE_URL: http://users_service:8001
+      ROOMS_SERVICE_URL: http://rooms_service:8002
     ports:  
       - "8004:8004"
     depends_on:

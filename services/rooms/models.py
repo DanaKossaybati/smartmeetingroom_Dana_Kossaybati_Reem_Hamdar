@@ -1,140 +1,136 @@
-import uuid
-from datetime import datetime, timezone
+"""
+Database models for Rooms Service.
+Defines SQLAlchemy ORM models for rooms, equipment, and their relationships.
 
+Author: Reem Hamdar
+"""
 from sqlalchemy.orm import relationship
 from database import Base
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, DateTime, func
+from sqlalchemy import ForeignKey, Column, Boolean, Integer, String, Date, Time, DateTime, Text
+from sqlalchemy.sql import func
 
 
-class Room(Base):    
+class Room(Base):
+    """
+    Room model representing meeting rooms.
+    
+    Attributes:
+        id: Primary key, auto-incrementing integer
+        name: Room name (required)
+        capacity: Maximum number of people (required)
+        location: Physical location of the room
+        is_available: Current availability status (default: True)
+        room_equipment: Relationship to equipment in this room
+    
+    Relationships:
+        - One-to-many with RoomEquipment (cascade delete)
+    """
     __tablename__ = "rooms"
 
-    id = Column(String, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String,nullable=False)
     capacity = Column(Integer,nullable=False)
     location = Column(String)
     is_available = Column(Boolean,default=True)
 
 
-    bookings = relationship("Booking", back_populates="room",cascade="all, delete-orphan")
+    # Relationships to models in this service only
     room_equipment = relationship("RoomEquipment", back_populates="room",cascade="all, delete-orphan")
-    reviews = relationship("Review", back_populates="room")
 
     def __init__(self,name,capacity,location,is_available=True):
+        """
+        Initialize a new Room.
+        
+        Args:
+            name: Room name
+            capacity: Maximum capacity
+            location: Physical location
+            is_available: Initial availability status (default: True)
+        """
         super().__init__()
-        self.id=str(uuid.uuid4())
         self.name = name
         self.capacity = capacity
         self.location = location
         self.is_available = is_available
     
-class Equipment(Base):    
-    __tablename__ = "equipments"
-    id = Column(String, primary_key=True, index=True)
+class Equipment(Base):
+    """
+    Equipment model representing room amenities and resources.
+    
+    Attributes:
+        id: Primary key, auto-incrementing integer
+        name: Equipment name (required)
+        room_equip: Relationship to rooms that have this equipment
+    
+    Relationships:
+        - One-to-many with RoomEquipment (cascade delete)
+    
+    Examples:
+        - Projector
+        - Whiteboard
+        - Conference Phone
+        - Video Camera
+    """
+    __tablename__ = "equipment"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String,nullable=False)
 
     room_equip=relationship("RoomEquipment", back_populates="equipment",cascade="all, delete-orphan")
 
     def __init__(self, name:str):
+        """
+        Initialize new Equipment.
+        
+        Args:
+            name: Equipment name
+        """
         super().__init__()
-        self.id=str(uuid.uuid4())
         self.name = name
 
-class RoomEquipment(Base):    
-    __tablename__ = "room_equipments"
+class RoomEquipment(Base):
+    """
+    Association table linking rooms and equipment with quantities.
+    
+    This is a many-to-many relationship table that tracks:
+    - Which equipment is in which room
+    - How many units of each equipment
+    
+    Attributes:
+        room_id: Foreign key to rooms table (composite primary key)
+        equipment_id: Foreign key to equipments table (composite primary key)
+        quantity: Number of units (default: 1)
+        room: Relationship back to Room
+        equipment: Relationship back to Equipment
+    
+    Example:
+        Room "Board Room" has:
+        - 2x Projectors (quantity=2)
+        - 1x Whiteboard (quantity=1)
+    """
+    __tablename__ = "room_equipment"
    
-    room_id = Column(String, ForeignKey("rooms.id") ,primary_key=True)
-    equipment_id = Column(String, ForeignKey("equipments.id"),primary_key=True)
+    room_id = Column(Integer, ForeignKey("rooms.id") ,primary_key=True)
+    equipment_id = Column(Integer, ForeignKey("equipment.id"),primary_key=True)
     quantity = Column(Integer,default=1)
 
 
     room = relationship("Room", back_populates="room_equipment")
     equipment = relationship("Equipment", back_populates="room_equip")
     
-    def __init__(self, room_id:str,equipment_id:str,quantity:int=1):
+    def __init__(self, room_id:int,equipment_id:int,quantity:int=1):
+        """
+        Initialize room-equipment association.
+        
+        Args:
+            room_id: ID of the room
+            equipment_id: ID of the equipment
+            quantity: Number of units (default: 1)
+        """
         super().__init__()
         self.room_id = room_id
         self.equipment_id = equipment_id
         self.quantity = quantity
 
 
-class User(Base):
-    """
-    User model representing system users.
-    
-    Handles user authentication, profile information, and role-based access control.
-    Passwords are stored as bcrypt hashes (never plain text).
-    
-    Attributes:
-        user_id: Primary key, auto-incremented
-        username: Unique identifier for login (indexed for fast lookups)
-        password_hash: Bcrypt hashed password (cost factor 12)
-        email: Unique email address (indexed for recovery/notifications)
-        full_name: Display name for the user
-        role: RBAC role (admin, regular_user, facility_manager, moderator, auditor)
-        is_active: Soft delete flag (false = account disabled)
-        created_at: Account creation timestamp (auto-set)
-        updated_at: Last profile modification (auto-updated on changes)
-        last_login: Tracks user activity for security auditing
-    """
-    __tablename__ = "users"
-    
-    # Primary key - auto-incremented integer
-    user_id = Column(Integer, primary_key=True, index=True)
-    
-    # Authentication fields
-    username = Column(
-        String(50), 
-        unique=True,      # No duplicate usernames allowed
-        nullable=False,   # Required field
-        index=True        # Indexed for fast login queries
-    )
-    password_hash = Column(
-        String(255),      # Long enough for bcrypt hash
-        nullable=False    # Password is mandatory
-    )
-    
-    # Contact information
-    email = Column(
-        String(100),
-        unique=True,      # No duplicate emails
-        nullable=False,
-        index=True        # Fast email lookups for recovery
-    )
-    
-    # Profile information
-    full_name = Column(
-        String(100),
-        nullable=False
-    )
-    
-    # Access control
-    role = Column(
-        String(20),
-        nullable=False,
-        default="regular_user"  # Default role for new users
-    )
-    
-    # Account status
-    is_active = Column(
-        Boolean,
-        default=True      # New accounts are active by default
-    )
-    
-    # Timestamps for auditing
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=func.now()  # PostgreSQL sets this automatically
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        onupdate=func.now()        # Auto-update on any change
-    )
-    last_login = Column(
-        DateTime(timezone=True),
-        nullable=True              # Null until first login
-    )
-    
-    def __repr__(self):
-        """String representation for debugging."""
-        return f"<User(username='{self.username}', role='{self.role}')>"
+# User and Booking models removed - they belong to users_service and bookings_service respectively
+# In microservices architecture, each service owns its domain models
