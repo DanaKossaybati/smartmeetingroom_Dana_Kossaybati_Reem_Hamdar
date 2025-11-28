@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>users.auth &mdash; Smart Meeting Room - Services API 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Smart Meeting Room - Services API
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../users/index.html">Users Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#service-details">Service Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/main.html">Main Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/models.html">Database Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/schemas.html">Request/Response Schemas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/services.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/auth.html">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/routes.html">API Routes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/database.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/errors.html">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#database-models">Database Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#module-users.schemas">Request/Response Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.schemas.UserCreate"><code class="docutils literal notranslate"><span class="pre">UserCreate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.schemas.UserLogin"><code class="docutils literal notranslate"><span class="pre">UserLogin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.schemas.UserResponse"><code class="docutils literal notranslate"><span class="pre">UserResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.schemas.UserUpdate"><code class="docutils literal notranslate"><span class="pre">UserUpdate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.schemas.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#core-services">Core Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#module-users.auth">Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.auth.hash_password"><code class="docutils literal notranslate"><span class="pre">hash_password()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.auth.verify_password"><code class="docutils literal notranslate"><span class="pre">verify_password()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.auth.create_access_token"><code class="docutils literal notranslate"><span class="pre">create_access_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.auth.get_current_user"><code class="docutils literal notranslate"><span class="pre">get_current_user()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.auth.require_admin"><code class="docutils literal notranslate"><span class="pre">require_admin()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#module-users.database">Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.database.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#module-users.errors">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.errors.UserNotFoundException"><code class="docutils literal notranslate"><span class="pre">UserNotFoundException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.errors.DuplicateUserException"><code class="docutils literal notranslate"><span class="pre">DuplicateUserException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.errors.UnauthorizedException"><code class="docutils literal notranslate"><span class="pre">UnauthorizedException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.errors.database_exception_handler"><code class="docutils literal notranslate"><span class="pre">database_exception_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.errors.validation_exception_handler"><code class="docutils literal notranslate"><span class="pre">validation_exception_handler()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#module-users.utils">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.utils.sanitize_input"><code class="docutils literal notranslate"><span class="pre">sanitize_input()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.utils.validate_password_strength"><code class="docutils literal notranslate"><span class="pre">validate_password_strength()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#users.utils.validate_username"><code class="docutils literal notranslate"><span class="pre">validate_username()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../users/index.html#api-routes">API Routes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../users/index.html#api-endpoints">API Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bookings/index.html">Bookings Service</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#service-details">Service Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#modules">Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/main.html">Main Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/models.html">Database Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/schemas.html">Request/Response Schemas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/services.html">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/routes.html">API Routes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/database.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/analytics.html">Analytics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#database-models">Database Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#module-bookings.schemas">Request/Response Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.BookingCreate"><code class="docutils literal notranslate"><span class="pre">BookingCreate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.BookingUpdate"><code class="docutils literal notranslate"><span class="pre">BookingUpdate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.BookingResponse"><code class="docutils literal notranslate"><span class="pre">BookingResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.AvailabilityCheck"><code class="docutils literal notranslate"><span class="pre">AvailabilityCheck</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.AvailabilityResponse"><code class="docutils literal notranslate"><span class="pre">AvailabilityResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.schemas.BookingHistoryResponse"><code class="docutils literal notranslate"><span class="pre">BookingHistoryResponse</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#core-services">Core Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#module-bookings.database">Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#bookings.database.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#analytics">Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bookings/index.html#api-routes">API Routes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../bookings/index.html#api-endpoints">API Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Smart Meeting Room - Services API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">users.auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for users.auth</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Authentication and authorization utilities.</span>
+<span class="sd">Handles password hashing, JWT token creation/validation, and access control.</span>
+
+<span class="sd">Author: Dana Kossaybati</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jose</span><span class="w"> </span><span class="kn">import</span> <span class="n">JWTError</span><span class="p">,</span> <span class="n">jwt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">passlib.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">CryptContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.security</span><span class="w"> </span><span class="kn">import</span> <span class="n">OAuth2PasswordBearer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="c1"># Load configuration from environment</span>
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">)</span>  <span class="c1"># Must be kept secret! Used to sign JWTs</span>
+<span class="n">ALGORITHM</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ALGORITHM&quot;</span><span class="p">,</span> <span class="s2">&quot;HS256&quot;</span><span class="p">)</span>  <span class="c1"># JWT signing algorithm</span>
+<span class="n">ACCESS_TOKEN_EXPIRE_MINUTES</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ACCESS_TOKEN_EXPIRE_MINUTES&quot;</span><span class="p">,</span> <span class="mi">1440</span><span class="p">))</span>  <span class="c1"># 24 hours default</span>
+
+<span class="c1"># Password hashing context using bcrypt</span>
+<span class="c1"># bcrypt is specifically designed for password hashing (slow and secure)</span>
+<span class="n">pwd_context</span> <span class="o">=</span> <span class="n">CryptContext</span><span class="p">(</span>
+    <span class="n">schemes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bcrypt&quot;</span><span class="p">],</span>     <span class="c1"># Use bcrypt algorithm</span>
+    <span class="n">deprecated</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span>       <span class="c1"># Auto-migrate from old schemes if needed</span>
+<span class="p">)</span>
+
+<span class="c1"># OAuth2 scheme for token authentication</span>
+<span class="c1"># Tells FastAPI where to look for the token</span>
+<span class="n">oauth2_scheme</span> <span class="o">=</span> <span class="n">OAuth2PasswordBearer</span><span class="p">(</span><span class="n">tokenUrl</span><span class="o">=</span><span class="s2">&quot;api/users/login&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="hash_password">
+<a class="viewcode-back" href="../../users/index.html#users.auth.hash_password">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">hash_password</span><span class="p">(</span><span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hash a plain text password using bcrypt.</span>
+<span class="sd">    </span>
+<span class="sd">    Bcrypt automatically:</span>
+<span class="sd">    - Generates a random salt</span>
+<span class="sd">    - Uses cost factor 12 (2^12 iterations)</span>
+<span class="sd">    - Produces a 60-character hash</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        password: Plain text password from user</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Hashed password string safe for database storage</span>
+<span class="sd">    </span>
+<span class="sd">    Example:</span>
+<span class="sd">        hash_password(&quot;MyPassword123&quot;) -&gt; r&quot;\\\...&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pwd_context</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_password">
+<a class="viewcode-back" href="../../users/index.html#users.auth.verify_password">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_password</span><span class="p">(</span><span class="n">plain_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hashed_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verify a plain text password against a stored hash.</span>
+<span class="sd">    </span>
+<span class="sd">    Uses constant-time comparison to prevent timing attacks.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        plain_password: Password provided during login</span>
+<span class="sd">        hashed_password: Stored hash from database</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        True if password matches, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pwd_context</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">plain_password</span><span class="p">,</span> <span class="n">hashed_password</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_access_token">
+<a class="viewcode-back" href="../../users/index.html#users.auth.create_access_token">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_access_token</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">expires_delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a JWT access token.</span>
+<span class="sd">    </span>
+<span class="sd">    JWT structure:</span>
+<span class="sd">    - Header: Algorithm and token type</span>
+<span class="sd">    - Payload: User data (sub, user_id, role, exp)</span>
+<span class="sd">    - Signature: Cryptographic signature using SECRET_KEY</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        data: Dictionary containing user information to encode</span>
+<span class="sd">        expires_delta: Optional custom expiration time</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Encoded JWT token string</span>
+<span class="sd">    </span>
+<span class="sd">    Example token payload:</span>
+<span class="sd">        {</span>
+<span class="sd">            &quot;sub&quot;: &quot;username&quot;,</span>
+<span class="sd">            &quot;user_id&quot;: 123,</span>
+<span class="sd">            &quot;role&quot;: &quot;admin&quot;,</span>
+<span class="sd">            &quot;exp&quot;: 1234567890</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">to_encode</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="c1"># Set expiration time</span>
+    <span class="k">if</span> <span class="n">expires_delta</span><span class="p">:</span>
+        <span class="n">expire</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">expires_delta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">expire</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="n">ACCESS_TOKEN_EXPIRE_MINUTES</span><span class="p">)</span>
+    
+    <span class="c1"># Add expiration to payload</span>
+    <span class="n">to_encode</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;exp&quot;</span><span class="p">:</span> <span class="n">expire</span><span class="p">})</span>
+    
+    <span class="c1"># Create signed JWT</span>
+    <span class="n">encoded_jwt</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">to_encode</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">ALGORITHM</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">encoded_jwt</span></div>
+
+
+<div class="viewcode-block" id="get_current_user">
+<a class="viewcode-back" href="../../users/index.html#users.auth.get_current_user">[docs]</a>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_current_user</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">oauth2_scheme</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dependency function to get the currently authenticated user from JWT token.</span>
+<span class="sd">    </span>
+<span class="sd">    Validates the token and extracts user information.</span>
+<span class="sd">    Raises HTTPException if token is invalid or expired.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        token: JWT token from Authorization header (Bearer token)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary with user_id, username, and role</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        HTTPException 401: If token is invalid or expired</span>
+<span class="sd">    </span>
+<span class="sd">    Usage in routes:</span>
+<span class="sd">        @app.get(&quot;/protected&quot;)</span>
+<span class="sd">        async def protected_route(current_user: dict = Depends(get_current_user)):</span>
+<span class="sd">            return {&quot;user&quot;: current_user[&quot;username&quot;]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">credentials_exception</span> <span class="o">=</span> <span class="n">HTTPException</span><span class="p">(</span>
+        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
+        <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Could not validate credentials&quot;</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>  <span class="c1"># Tell client to send Bearer token</span>
+    <span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Decode and verify JWT</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="n">ALGORITHM</span><span class="p">])</span>
+        
+        <span class="c1"># Extract username from &#39;sub&#39; claim (standard JWT practice)</span>
+        <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">credentials_exception</span>
+        
+        <span class="c1"># Return user information for use in routes</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
+        <span class="c1"># Token is invalid, expired, or tampered with</span>
+        <span class="k">raise</span> <span class="n">credentials_exception</span></div>
+
+
+<div class="viewcode-block" id="require_admin">
+<a class="viewcode-back" href="../../users/index.html#users.auth.require_admin">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">require_admin</span><span class="p">(</span><span class="n">current_user</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dependency function to require admin role.</span>
+<span class="sd">    </span>
+<span class="sd">    Use this to protect admin-only endpoints.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        current_user: User dict from get_current_user dependency</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Same user dict if admin, raises exception otherwise</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        HTTPException 403: If user is not an admin</span>
+<span class="sd">    </span>
+<span class="sd">    Usage:</span>
+<span class="sd">        @app.delete(&quot;/users/{id}&quot;)</span>
+<span class="sd">        async def delete_user(current_user: dict = Depends(require_admin)):</span>
+<span class="sd">            # Only admins can reach this code</span>
+<span class="sd">            pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">current_user</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;admin&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_403_FORBIDDEN</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Admin access required&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_user</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Dana Kossaybati &amp; Reem Hamdar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

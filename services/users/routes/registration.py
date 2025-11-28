@@ -24,23 +24,45 @@ async def register_user(user_data: schemas.UserCreate, db: Session = Depends(get
     """
     Register a new user account.
     
-    This endpoint handles user registration with validation and security:
-    - Validates username uniqueness (prevents duplicates)
-    - Validates email uniqueness (one account per email)
-    - Validates password strength (handled by Pydantic schema)
-    - Hashes password using bcrypt before storage
-    - Creates inactive account by default (can be changed)
+    Creates a new user account with secure password hashing and validation:
+    - Validates username uniqueness (prevents duplicate usernames)
+    - Validates email uniqueness (one account per email address)
+    - Validates password strength via Pydantic schema constraints
+    - Hashes password using bcrypt (cost factor 12) before storage
+    - Creates account with is_active=True by default
     
     Args:
-        user_data: UserCreate schema with username, password, email, full_name, role
-        db: Database session (injected by FastAPI dependency)
+        user_data (schemas.UserCreate): Registration data with fields:
+            - username (str, 3-50 chars): Unique login identifier
+            - password (str, min 8 chars): Will be bcrypt hashed
+            - email (str): Valid email, must be unique
+            - full_name (str): Display name for the user
+            - role (str, optional): User role (default: 'regular_user')
+        db (Session): SQLAlchemy database session (FastAPI dependency injection)
     
     Returns:
-        UserResponse schema with created user details (excludes password)
+        schemas.UserResponse: Created user object with fields:
+            - user_id (int): Auto-generated primary key
+            - username (str): The registered username
+            - email (str): The registered email
+            - full_name (str): Display name
+            - role (str): User role
+            - is_active (bool): Account active status
+            - created_at (datetime): Account creation timestamp
     
     Raises:
-        HTTPException 409: If username or email already exists
-        HTTPException 422: If validation fails (automatic from Pydantic)
+        HTTPException(409): Username or email already registered
+        HTTPException(422): Validation failed (username/password/email constraints)
+    
+    Example:
+        POST /api/users/register
+        {
+            "username": "john_doe",
+            "password": "SecurePass123!",
+            "email": "john@example.com",
+            "full_name": "John Doe",
+            "role": "regular_user"
+        }
     """
     # Check if username or email already exists
     # Using OR condition to check both in single query for efficiency

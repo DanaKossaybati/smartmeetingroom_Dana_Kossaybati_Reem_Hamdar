@@ -12,9 +12,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-    - postgres_data:/var/lib/postgresql/data
-    - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
-    - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed_data.sql
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -22,6 +22,41 @@ services:
       retries: 5
     networks:
       - meetingroom_network
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - postgres
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
 
   # Users Service (Dana)
   users_service:
@@ -49,33 +84,33 @@ services:
       - meetingroom_network
     restart: unless-stopped
 
-  # # Bookings Service (Dana)
-  # bookings_service:
-  #   build:
-  #     context: ./services/bookings
-  #     dockerfile: Dockerfile
-  #   container_name: bookings_service
-  #   environment:
-  #     DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
-  #     USERS_SERVICE_URL: http://users_service:8001
-  #     ROOMS_SERVICE_URL: http://rooms_service:8002
-  #     SECRET_KEY: your-secret-key-change-in-production
-  #   ports:
-  #     - "8003:8003"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     users_service:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 40s
-  #   networks:
-  #     - meetingroom_network
-  #   restart: unless-stopped
+  # Bookings Service (Dana)
+  bookings_service:
+    build:
+      context: ./services/bookings
+      dockerfile: Dockerfile
+    container_name: bookings_service
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/meetingroom_db
+      USERS_SERVICE_URL: http://users_service:8001
+      ROOMS_SERVICE_URL: http://rooms_service:8002
+      SECRET_KEY: your-secret-key-change-in-production
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users_service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - meetingroom_network
+    restart: unless-stopped
 
   # Rooms Service (Reem)
   rooms_service:
@@ -150,6 +185,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:
